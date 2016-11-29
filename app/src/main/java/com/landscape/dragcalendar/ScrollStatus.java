@@ -6,8 +6,8 @@ package com.landscape.dragcalendar;
 public enum  ScrollStatus {
     IDLE("IDLE"),
     DRAGGING("DRAGGING"),
-    REFRESHING("REFRESHING"),
-    LOADING("LOADING");
+    MONTH("MONTH"),
+    WEEK("WEEK");
 
     private String value;
 
@@ -20,12 +20,12 @@ public enum  ScrollStatus {
         return value;
     }
 
-    public static boolean isRefreshing(ScrollStatus status) {
-        return status == REFRESHING;
+    public static boolean isMonth(ScrollStatus status) {
+        return status == MONTH;
     }
 
-    public static boolean isLoading(ScrollStatus status) {
-        return status == LOADING;
+    public static boolean isWeek(ScrollStatus status) {
+        return status == WEEK;
     }
 
     public static boolean isDragging(ScrollStatus status) {

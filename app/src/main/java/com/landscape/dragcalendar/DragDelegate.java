@@ -17,7 +17,6 @@ public class DragDelegate {
     Direction dragDirection = Direction.STATIC;
     int initY = 0, mActivePointerId = -1;
     private GestureDetectorCompat gestureDetector;
-    private float mDragPercent;
 
     public DragDelegate(DragActionBridge consignor) {
         gestureDetector = new GestureDetectorCompat(((ViewGroup) consignor).getContext(), new YScrollDetector());
@@ -34,7 +33,6 @@ public class DragDelegate {
                 mActivePointerId = MotionEventCompat.getPointerId(event, 0);
                 initY = (int) MotionEventUtil.getMotionEventY(event, mActivePointerId);
                 consignor.dragHelper().shouldInterceptTouchEvent(event);
-                mDragPercent = 0;
                 consignor.beforeMove();
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -44,12 +42,12 @@ public class DragDelegate {
                 direction = Direction.getDirection(
                         (int) (MotionEventUtil.getMotionEventY(event, mActivePointerId) - initY));
                 if (direction == Direction.DOWN) {
-                    if (consignor.isRefreshAble() || ScrollStatus.isLoading(consignor.scrollStatus())) {
-                        if (!ScrollStatus.isDragging(consignor.scrollStatus()) && !ScrollStatus.isRefreshing(consignor.scrollStatus()) && ScrollViewCompat.canSmoothDown(consignor.target())) {
-                            if (ScrollStatus.isLoading(consignor.scrollStatus())) {
-                                return handleMotionEvent(event);
-                            } else {
+                    if (consignor.isCollapsAble()) {
+                        if (!ScrollStatus.isDragging(consignor.scrollStatus())) {
+                            if (ScrollViewCompat.canSmoothDown(consignor.target())) {
                                 return false;
+                            } else {
+                                return handleMotionEvent(event);
                             }
                         } else {
                             return handleMotionEvent(event);
@@ -58,17 +56,11 @@ public class DragDelegate {
                         return false;
                     }
                 } else if (direction == Direction.UP) {
-                    if (consignor.isLoadAble() || ScrollStatus.isRefreshing(consignor.scrollStatus())) {
-                        if (!ScrollStatus.isDragging(consignor.scrollStatus()) && !ScrollStatus.isLoading(consignor.scrollStatus()) && ScrollViewCompat.canSmoothUp(consignor.target())) {
-                            if (ScrollStatus.isRefreshing(consignor.scrollStatus())) {
-                                return handleMotionEvent(event);
-                            } else {
-                                return false;
-                            }
+                    if (consignor.isCollapsAble()) {
+                        if (!ScrollStatus.isDragging(consignor.scrollStatus()) && ScrollStatus.isMonth(consignor.scrollStatus())) {
+                            return handleMotionEvent(event);
                         } else {
-                            if (ScrollViewCompat.canSmoothDown(consignor.target()) || ScrollStatus.isRefreshing(consignor.scrollStatus())) {
-                                return handleMotionEvent(event);
-                            }
+                            return false;
                         }
                     } else {
                         return false;
@@ -98,9 +90,6 @@ public class DragDelegate {
                 if (mActivePointerId == -1) {
                     return true;
                 }
-                float originalDragPercent = (float) Math.abs(consignor.contentTop()) / (float)DRAG_MAX_RANGE + .4f;
-                mDragPercent = Math.min(1f, Math.abs(originalDragPercent));
-                consignor.setDrawPercent(mDragPercent);
                 consignor.dragHelper().processTouchEvent(event);
                 break;
             case MotionEvent.ACTION_UP:
@@ -137,14 +126,17 @@ public class DragDelegate {
         this.consignor = consignor;
     }
 
-    public interface DragActionBridge{
+    public interface DragActionBridge {
         ScrollStatus scrollStatus();
+
         int contentTop();
+
         ViewDragHelper dragHelper();
+
         View target();
-        void setDrawPercent(float drawPercent);
-        boolean isRefreshAble();
-        boolean isLoadAble();
+
         void beforeMove();
+
+        boolean isCollapsAble();
     }
 }

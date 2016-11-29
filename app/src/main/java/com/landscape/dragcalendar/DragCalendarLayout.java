@@ -2,8 +2,12 @@ package com.landscape.dragcalendar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -16,7 +20,15 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     private int contentId = 0;
     DragDelegate dragDelegate = null;
     View mContent = null;
+    ViewPager monthPager, weekPager;
 
+    int contentTop = 0;
+
+    public static final int MONTH_HEIGHT = 300;
+    public static final int WEEK_HEIGHT = 50;
+
+    CalendarDragListener dragListener;
+    ScrollStatus status = ScrollStatus.IDLE;
 
     public DragCalendarLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -31,12 +43,69 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
+        layout(false);
+    }
+
+    private void layout(boolean fixedMonth) {
+        if (monthPager == null || weekPager == null) {
+            return;
+        }
+        int height = getMeasuredHeight();
+        int width = getMeasuredWidth();
+        int paddingLeft = getPaddingLeft();
+        int paddingTop = getPaddingTop();
+        int paddingRight = getPaddingRight();
+        int paddingBottom = getPaddingBottom();
+
+        if (mContent != null) {
+            mContent.layout(paddingLeft, paddingTop + contentTop, width - paddingRight, contentTop + height - paddingBottom);
+        }
+        if (!fixedMonth) {
+            monthPager.layout(
+                    paddingLeft,
+                    contentTop - monthPager.getMeasuredHeight() + paddingTop,
+                    width - paddingRight,
+                    contentTop + paddingTop);
+        } else {
+            // 注释掉看看能否定住月视图
+
+//            monthPager.layout(
+//                    paddingLeft,
+//                    contentTop - monthPager.getMeasuredHeight() + paddingTop,
+//                    width - paddingRight,
+//                    contentTop + paddingTop);
+        }
+
+        weekPager.layout(
+                paddingLeft,
+                paddingTop,
+                width - paddingRight,
+                paddingTop + weekPager.getMeasuredHeight());
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        inflateViews();
+        ensureTarget();
+    }
+
+    private void inflateViews() {
+        monthPager = (ViewPager) View.inflate(getContext(), R.layout.calendar_pager, null);
+        addView(monthPager, 0);
+        weekPager = (ViewPager) View.inflate(getContext(), R.layout.calendar_pager, null);
+        addView(weekPager);
+
+        ViewPager.LayoutParams layoutParams = (ViewPager.LayoutParams) monthPager.getLayoutParams();
+        layoutParams.height = dp2px(MONTH_HEIGHT);
+        monthPager.setLayoutParams(layoutParams);
+
+        layoutParams = (ViewPager.LayoutParams) weekPager.getLayoutParams();
+        layoutParams.height = dp2px(WEEK_HEIGHT);
+        weekPager.setLayoutParams(layoutParams);
+    }
+
+    private void initAdapter() {
 
     }
 
@@ -45,7 +114,7 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
             if (getChildCount() > 0) {
                 for (int i = 0; i < getChildCount(); i++) {
                     View child = getChildAt(i);
-                    if (child != refreshView && child != loadView) {
+                    if (child != monthPager && child != weekPager) {
                         mContent = child;
                         mContent.setClickable(true);
                         return;
@@ -62,16 +131,38 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
 
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            return true;
+            return child == mContent
+                    || child == monthPager
+                    || child == weekPager;
         }
 
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
+            if (child == mContent) {
+                status = ScrollStatus.DRAGGING;
+                if (contentTop + dy > MONTH_HEIGHT) {
+                    return MONTH_HEIGHT;
+                } else if (contentTop + dy < WEEK_HEIGHT) {
+                    return WEEK_HEIGHT;
+                } else {
+                    return top;
+                }
+            } else {
+
+                status = ScrollStatus.DRAGGING;
+                if (contentTop + dy > MONTH_HEIGHT) {
+                    return MONTH_HEIGHT - monthPager.getMeasuredHeight();
+                } else if (contentTop + dy < WEEK_HEIGHT) {
+                    return getPaddingTop();
+                } else {
+                    return top;
+                }
+            }
         }
 
         @Override
         public int getViewVerticalDragRange(View child) {
-            return DRAG_MAX_RANGE;
+            return MONTH_HEIGHT;
         }
 
         @Override
@@ -139,6 +230,68 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
         }
     };
 
+    public void setExpand(boolean expand) {
+        setExpand(expand, true);
+    }
+
+    public void setExpand(boolean expand, boolean anim) {
+        if (anim) {
+            if (expand) {
+                if (dragHelper.smoothSlideViewTo(mContent, 0, dp2px(MONTH_HEIGHT))) {
+                    ViewCompat.postInvalidateOnAnimation(this);
+                    status = ScrollStatus.MONTH;
+                } else {
+                    status = ScrollStatus.MONTH;
+                    if (dragListener != null) {
+                        dragListener.onExpand();
+                    }
+                }
+            } else {
+                if (dragHelper.smoothSlideViewTo(mContent, 0, dp2px(WEEK_HEIGHT))) {
+                    ViewCompat.postInvalidateOnAnimation(this);
+                    status = ScrollStatus.WEEK;
+                } else {
+                    if (dragListener != null) {
+                        dragListener.onFold();
+                    }
+                    status = ScrollStatus.WEEK;
+                }
+            }
+        } else {
+
+        }
+    }
+
+    boolean animContinue = true;
+
+    @Override
+    public void computeScroll() {
+        animContinue = dragHelper.continueSettling(true);
+        if (animContinue) {
+            ViewCompat.postInvalidateOnAnimation(this);
+        } else {
+
+        }
+    }
+
+    public void setCollapseAble(boolean collapseAble) {
+
+    }
+
+
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getContext().getResources().getDisplayMetrics());
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        return dragDelegate.onInterceptTouchEvent(event);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return dragDelegate.onTouchEvent(event);
+    }
 
     @Override
     public ScrollStatus scrollStatus() {
@@ -147,36 +300,30 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
 
     @Override
     public int contentTop() {
-        return 0;
+        return contentTop;
     }
 
     @Override
     public ViewDragHelper dragHelper() {
-        return null;
+        return dragHelper;
     }
 
     @Override
     public View target() {
-        return null;
-    }
-
-    @Override
-    public void setDrawPercent(float drawPercent) {
-
-    }
-
-    @Override
-    public boolean isRefreshAble() {
-        return false;
-    }
-
-    @Override
-    public boolean isLoadAble() {
-        return false;
+        return mContent;
     }
 
     @Override
     public void beforeMove() {
 
+    }
+
+    @Override
+    public boolean isCollapsAble() {
+        return true;
+    }
+
+    public void setCalendarDragListener(CalendarDragListener calendarDragListener) {
+        dragListener = calendarDragListener;
     }
 }
