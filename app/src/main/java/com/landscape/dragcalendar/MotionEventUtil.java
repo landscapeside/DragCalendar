@@ -1,5 +1,7 @@
 package com.landscape.dragcalendar;
 
+import android.content.Context;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 
 /**
@@ -12,5 +14,9 @@ public class MotionEventUtil {
             return -1;
         }
         return android.support.v4.view.MotionEventCompat.getY(ev, index);
+    }
+
+    public static int dp2px(Context context,int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 }
