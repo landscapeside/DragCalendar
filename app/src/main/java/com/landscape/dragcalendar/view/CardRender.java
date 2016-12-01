@@ -9,5 +9,5 @@ import java.util.Calendar;
  */
 
 public interface CardRender {
-    void render(final ViewGroup view1, final Calendar today);
+    void render(final ViewGroup view1, final Calendar today,String selectTime);
 }

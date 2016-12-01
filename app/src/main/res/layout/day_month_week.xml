@@ -24,24 +24,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="12"
-            android:textColor="@color/black_deep"
+            android:textColor="@color/white"
             android:textSize="@dimen/app_size"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/nongli"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="初一"
-            android:textColor="@color/last_msg_tv_color"
-            android:textSize="10sp" />
+        <ImageView
+            android:id="@+id/imv_point"
+            android:layout_width="5dip"
+            android:layout_height="5dip"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dip"
+            android:src="@drawable/calendar_item_point"/>
     </LinearLayout>
-    <ImageView
-        android:id="@+id/imv_point"
-        android:layout_width="5dip"
-        android:layout_height="5dip"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="3dip"
-        android:layout_marginTop="2dip" />
+
 </LinearLayout>

@@ -22,6 +22,9 @@ import java.util.Calendar;
  */
 
 public class MonthCard extends LinearLayout implements CardRender {
+    int selectLine = 0;
+    int selectPos = 0;
+
     public MonthCard(Context context) {
         super(context);
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -32,121 +35,85 @@ public class MonthCard extends LinearLayout implements CardRender {
     }
 
     @Override
-    public void render(ViewGroup view1, Calendar today) {
+    public void render(ViewGroup view1, Calendar today,String selectTime) {
         //一页显示一个月+7天，为42；
         for (int b = 0; b < 6; b++) {
             final ViewGroup view = (ViewGroup) view1.getChildAt(b);
             for (int a = 0; a < 7; a++) {
                 final int dayOfMonth = today.get(Calendar.DAY_OF_MONTH);
-                // int day_of_year=today.get(Calendar.DAY_OF_YEAR);
                 final ViewGroup dayOfWeek = (ViewGroup) view.getChildAt(a);
-                //((TextView) dayOfWeek.getChildAt(0)).setText(getStr(today.get(Calendar.DAY_OF_WEEK)));
                 ((TextView) dayOfWeek.findViewById(R.id.gongli)).setText(dayOfMonth + "");
-                String str = "";
-                try {
-                    str = new CalendarUtil().getChineseDay(today.get(Calendar.YEAR),
-                            today.get(Calendar.MONTH) + 1, today.get(Calendar.DAY_OF_MONTH));
-                } catch (Exception e) {
-
-                }
-                dayOfWeek.findViewById(R.id.imv_point).setVisibility(View.INVISIBLE);
-//                String str =
-                if (str.equals("初一")) {//如果是初一，显示月份
-                    str = new CalendarUtil().getChineseMonth(today.get(Calendar.YEAR),
-                            today.get(Calendar.MONTH) + 1, today.get(Calendar.DAY_OF_MONTH));
-                }
-                ((TextView) dayOfWeek.findViewById(R.id.nongli)).setText(str);
                 dayOfWeek.setTag(DateUtils.getTagTimeStr(today));
 
                 dayOfWeek.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //TODO:发消息，告诉Activity我改变选中的日期了
-                        if (MonthCalendarAdpter.this.os != null) {
-                            os.sendEmptyMessage(MyCalendarFragment.change);
+                        if (callbk != null) {
+                            callbk.onSelect(dayOfWeek.getTag().toString());
                         }
-
-                        selectTime = dayOfWeek.getTag().toString();
-                        today.add(Calendar.DATE, -42);//因为已经渲染过42天，所以today往前推42天， 代表当前page重绘；
-
-                        //
-                        //恢复上个选中的day的状态
-                        if (day != null) {
-                            day.findViewById(R.id.cal_container).setBackgroundDrawable(white);
-                            ((TextView) day.findViewById(R.id.gongli)).setTextColor(text_black);
-                            //特殊情况
-                            if (strToDay.equals(tag)) {
-                                day.findViewById(R.id.cal_container).setBackgroundDrawable(yuanOfBlack);
-                                ((TextView) day.findViewById(R.id.gongli)).setTextColor(text_black);
-                                ((TextView) day.findViewById(R.id.nongli)).setTextColor(last_msg_tv_color);
-
-                            } else {
-                                day.findViewById(R.id.cal_container).setBackgroundDrawable(white);
-                                ((TextView) day.findViewById(R.id.gongli)).setTextColor(text_black);
-                                ((TextView) day.findViewById(R.id.nongli)).setTextColor(last_msg_tv_color);
-                            }
-                        }
-                        //变为红色
-                        dayOfWeek.findViewById(R.id.cal_container).setBackgroundDrawable(yuanOfRed);
-                        ((TextView) dayOfWeek.findViewById(R.id.gongli)).setTextColor(text_white);
-                        ((TextView) dayOfWeek.findViewById(R.id.nongli)).setTextColor(text_white);
                     }
                 });
-                if (strToDay.equals(DateUtils.getTagTimeStr(today))) {
-                    dayOfWeek.findViewById(R.id.cal_container).setBackgroundDrawable(yuanOfBlack);
-                    ((TextView) dayOfWeek.findViewById(R.id.gongli)).setTextColor(text_black);
-                    ((TextView) dayOfWeek.findViewById(R.id.nongli)).setTextColor(last_msg_tv_color);
-                    if (!selectTime.equals(strToDay)) {
-                        today.add(Calendar.DATE, 1);
-                        continue;
-                    }
-                } else {
-                    dayOfWeek.findViewById(R.id.cal_container).setBackgroundDrawable(white);
-                    ((TextView) dayOfWeek.findViewById(R.id.gongli)).setTextColor(text_black);
-                }
-                //不是当前月的显示为灰色
-                if ((Integer.parseInt((String) view1.getTag())) != today.get(Calendar.MONTH)) {
-                    ((TextView) dayOfWeek.findViewById(R.id.gongli)).setTextColor(last_msg_tv_color);
-                    if ((Integer.parseInt((String) view1.getTag())) > today.get(Calendar.MONTH)) {
-                        //下个月
-                        dayOfWeek.setOnClickListener(lastLister);
-                    } else {
-                        //上个月
-                        dayOfWeek.setOnClickListener(nextLister);
-                    }
+
+                //不是当前月不显示
+                int currentMonth = today.get(Calendar.MONTH);
+                if ((Integer.parseInt((String) view1.getTag())) != currentMonth) {
+                    dayOfWeek.setVisibility(INVISIBLE);
                     today.add(Calendar.DATE, 1);
                     continue;
                 } else {
-                    dayOfWeek.setAlpha(1.0f);
+                    dayOfWeek.setVisibility(VISIBLE);
                 }
                 //如果是选中天的话显示为红色
                 if (selectTime.equals(DateUtils.getTagTimeStr(today))) {
-
-                    dayOfWeek.findViewById(R.id.cal_container).setBackgroundDrawable(yuanOfRed);
-                    ((TextView) dayOfWeek.findViewById(R.id.gongli)).setTextColor(text_white);
-                    ((TextView) dayOfWeek.findViewById(R.id.nongli)).setTextColor(text_white);
-
-                    if (strToDay.equals(DateUtils.getTagTimeStr(today))) {
-                        dayOfWeek.findViewById(R.id.cal_container).setBackgroundDrawable(yuanOfRed);
-                        ((TextView) dayOfWeek.findViewById(R.id.gongli)).setTextColor(text_white);
-                        ((TextView) dayOfWeek.findViewById(R.id.nongli)).setTextColor(text_white);
-                    }
-
-                    day = dayOfWeek;
-                    if (MonthCalendarAdpter.this.os != null) {
-                        Message message = os.obtainMessage();
-                        message.obj = b;
-                        message.what = MyCalendarFragment.change2;
-                        os.sendMessage(message);
-                    }
-                    tag = selectTime;
+                    selectLine = b;
+                    selectPos = calculatePos(dayOfWeek.getMeasuredHeight(),selectLine);
+                    renderSelect(dayOfWeek,true);
                 } else {
-                    dayOfWeek.findViewById(R.id.cal_container).setBackgroundDrawable(white);
-                    ((TextView) dayOfWeek.findViewById(R.id.gongli)).setTextColor(text_black);
-                    ((TextView) dayOfWeek.findViewById(R.id.nongli)).setTextColor(last_msg_tv_color);
+                    renderNormal(dayOfWeek,true);
                 }
                 today.add(Calendar.DATE, 1);
             }
         }
+    }
+
+    private void renderSelect(ViewGroup dayView,boolean containData) {
+        dayView.findViewById(R.id.cal_container).setBackgroundResource(R.drawable.corner_shape_blue);
+        if (containData) {
+            ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point_select);
+            dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);
+        } else {
+            dayView.findViewById(R.id.imv_point).setVisibility(INVISIBLE);
+        }
+    }
+
+    private void renderNormal(ViewGroup dayView,boolean containData) {
+        dayView.findViewById(R.id.cal_container).setBackgroundResource(R.drawable.corner_shape_blue);
+        if (containData) {
+            ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point);
+            dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);
+        } else {
+            dayView.findViewById(R.id.imv_point).setVisibility(INVISIBLE);
+        }
+    }
+
+    private int calculatePos(int unitHeight,int line) {
+        return unitHeight * line;
+    }
+
+    public int getSelectLine() {
+        return selectLine;
+    }
+
+    public int getSelectPos() {
+        return selectPos;
+    }
+
+    public interface ICallbk{
+        void onSelect(String selectTime);
+    }
+
+    ICallbk callbk = null;
+    public void setCallbk(ICallbk callbk) {
+        this.callbk = callbk;
     }
 }
