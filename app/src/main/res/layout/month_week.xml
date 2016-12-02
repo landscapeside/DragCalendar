@@ -5,18 +5,18 @@
     android:background="@color/white"
     android:orientation="horizontal">
 
-    <include layout="@layout/day_month_week" />
+    <include layout="@layout/day_month" />
 
-    <include layout="@layout/day_month_week" />
+    <include layout="@layout/day_month" />
 
-    <include layout="@layout/day_month_week" />
+    <include layout="@layout/day_month" />
 
-    <include layout="@layout/day_month_week" />
+    <include layout="@layout/day_month" />
 
-    <include layout="@layout/day_month_week" />
+    <include layout="@layout/day_month" />
 
-    <include layout="@layout/day_month_week" />
+    <include layout="@layout/day_month" />
 
-    <include layout="@layout/day_month_week" />
+    <include layout="@layout/day_month" />
 
 </LinearLayout>

@@ -1,9 +1,6 @@
 package com.landscape.dragcalendar.view;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.content.Context;
-import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,8 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.landscape.dragcalendar.R;
-import com.landscape.dragcalendar.adapter.MonthCalendarAdpter;
-import com.landscape.dragcalendar.utils.CalendarUtil;
+import com.landscape.dragcalendar.presenter.CalendarPresenter;
 import com.landscape.dragcalendar.utils.DateUtils;
 
 import java.util.Calendar;
@@ -21,7 +17,7 @@ import java.util.Calendar;
  * Created by landscape on 2016/11/30.
  */
 
-public class MonthCard extends LinearLayout implements CardRender {
+public class MonthCard extends LinearLayout implements CalendarCard {
     int selectLine = 0;
     int selectPos = 0;
 
@@ -35,28 +31,21 @@ public class MonthCard extends LinearLayout implements CardRender {
     }
 
     @Override
-    public void render(ViewGroup view1, Calendar today,String selectTime) {
+    public void render(Calendar today) {
         //一页显示一个月+7天，为42；
         for (int b = 0; b < 6; b++) {
-            final ViewGroup view = (ViewGroup) view1.getChildAt(b);
+            final ViewGroup view = (ViewGroup) getChildAt(b);
             for (int a = 0; a < 7; a++) {
                 final int dayOfMonth = today.get(Calendar.DAY_OF_MONTH);
                 final ViewGroup dayOfWeek = (ViewGroup) view.getChildAt(a);
                 ((TextView) dayOfWeek.findViewById(R.id.gongli)).setText(dayOfMonth + "");
                 dayOfWeek.setTag(DateUtils.getTagTimeStr(today));
 
-                dayOfWeek.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (callbk != null) {
-                            callbk.onSelect(dayOfWeek.getTag().toString());
-                        }
-                    }
-                });
+                dayOfWeek.setOnClickListener(v -> CalendarPresenter.instance().setSelectTime(dayOfWeek.getTag().toString()));
 
                 //不是当前月不显示
                 int currentMonth = today.get(Calendar.MONTH);
-                if ((Integer.parseInt((String) view1.getTag())) != currentMonth) {
+                if ((Integer.parseInt((String) getTag())) != currentMonth) {
                     dayOfWeek.setVisibility(INVISIBLE);
                     today.add(Calendar.DATE, 1);
                     continue;
@@ -64,7 +53,7 @@ public class MonthCard extends LinearLayout implements CardRender {
                     dayOfWeek.setVisibility(VISIBLE);
                 }
                 //如果是选中天的话显示为红色
-                if (selectTime.equals(DateUtils.getTagTimeStr(today))) {
+                if (CalendarPresenter.instance().getSelectTime().equals(DateUtils.getTagTimeStr(today))) {
                     selectLine = b;
                     selectPos = calculatePos(dayOfWeek.getMeasuredHeight(),selectLine);
                     renderSelect(dayOfWeek,true);
@@ -106,14 +95,5 @@ public class MonthCard extends LinearLayout implements CardRender {
 
     public int getSelectPos() {
         return selectPos;
-    }
-
-    public interface ICallbk{
-        void onSelect(String selectTime);
-    }
-
-    ICallbk callbk = null;
-    public void setCallbk(ICallbk callbk) {
-        this.callbk = callbk;
     }
 }

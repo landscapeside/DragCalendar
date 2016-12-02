@@ -11,16 +11,22 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.landscape.dragcalendar.presenter.CalendarPresenter;
+import com.landscape.dragcalendar.view.MonthView;
+import com.landscape.dragcalendar.view.WeekView;
+
 /**
  * Created by landscape on 2016/11/28.
  */
 
 public class DragCalendarLayout extends FrameLayout implements DragDelegate.DragActionBridge {
+    CalendarPresenter presenter;
     ViewDragHelper dragHelper;
     private int contentId = 0;
     DragDelegate dragDelegate = null;
     View mContent = null;
-    ViewPager monthPager, weekPager;
+    MonthView monthView;
+    WeekView weekView;
 
     int contentTop = 0;
 
@@ -47,7 +53,7 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     }
 
     private void layout(boolean fixedMonth) {
-        if (monthPager == null || weekPager == null) {
+        if (monthView == null || weekView == null) {
             return;
         }
         int height = getMeasuredHeight();
@@ -61,9 +67,9 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
             mContent.layout(paddingLeft, paddingTop + contentTop, width - paddingRight, contentTop + height - paddingBottom);
         }
         if (!fixedMonth) {
-            monthPager.layout(
+            monthView.layout(
                     paddingLeft,
-                    contentTop - monthPager.getMeasuredHeight() + paddingTop,
+                    contentTop - monthView.getMeasuredHeight() + paddingTop,
                     width - paddingRight,
                     contentTop + paddingTop);
         } else {
@@ -76,11 +82,11 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
 //                    contentTop + paddingTop);
         }
 
-        weekPager.layout(
+        weekView.layout(
                 paddingLeft,
                 paddingTop,
                 width - paddingRight,
-                paddingTop + weekPager.getMeasuredHeight());
+                paddingTop + weekView.getMeasuredHeight());
     }
 
     @Override
@@ -88,21 +94,25 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
         super.onFinishInflate();
         inflateViews();
         ensureTarget();
+        initPresenter();
+    }
+
+    private void initPresenter() {
+        presenter = CalendarPresenter.instance();
+        presenter.registerDragCalendarLayout(this);
+        presenter.registerMonthView(monthView);
+        presenter.registerWeekView(weekView);
     }
 
     private void inflateViews() {
-        monthPager = (ViewPager) View.inflate(getContext(), R.layout.calendar_pager, null);
-        addView(monthPager, 0);
-        weekPager = (ViewPager) View.inflate(getContext(), R.layout.calendar_pager, null);
-        addView(weekPager);
 
-        ViewPager.LayoutParams layoutParams = (ViewPager.LayoutParams) monthPager.getLayoutParams();
-        layoutParams.height = dp2px(MONTH_HEIGHT);
-        monthPager.setLayoutParams(layoutParams);
 
-        layoutParams = (ViewPager.LayoutParams) weekPager.getLayoutParams();
-        layoutParams.height = dp2px(WEEK_HEIGHT);
-        weekPager.setLayoutParams(layoutParams);
+
+
+        monthView = new MonthView(getContext());
+        addView(monthView, 0);
+        weekView = new WeekView(getContext());
+        addView(weekView);
     }
 
     private void initAdapter() {
@@ -114,7 +124,7 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
             if (getChildCount() > 0) {
                 for (int i = 0; i < getChildCount(); i++) {
                     View child = getChildAt(i);
-                    if (child != monthPager && child != weekPager) {
+                    if (child != monthView && child != weekView) {
                         mContent = child;
                         mContent.setClickable(true);
                         return;
@@ -132,8 +142,8 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
             return child == mContent
-                    || child == monthPager
-                    || child == weekPager;
+                    || child == monthView
+                    || child == weekView;
         }
 
         @Override

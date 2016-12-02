@@ -6,12 +6,8 @@ import android.view.View;
 /**
  * Created by Administrator on 2016/6/13 0013.
  */
-public class CalendarBaseAdpter extends PagerAdapter {
+public class CalendarBaseAdapter extends PagerAdapter {
 
-    /**
-     * 选中时间：xx-xx-xx
-     * */
-    public static String selectTime = "";
     /**
      * 是否拦截事件
      * */
