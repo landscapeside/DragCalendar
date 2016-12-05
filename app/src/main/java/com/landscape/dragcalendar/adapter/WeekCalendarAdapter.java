@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 
 import com.landscape.dragcalendar.view.CalendarCard;
 import com.landscape.dragcalendar.view.MonthCard;
+import com.landscape.dragcalendar.view.WeekCard;
+import com.landscape.dragcalendar.view.WeekView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,12 +19,12 @@ import java.util.List;
  */
 public class WeekCalendarAdapter extends CalendarBaseAdapter {
     private List<View> views = new ArrayList<>();
-    MonthCard currentCard;
+    WeekCard currentCard;
 
     public WeekCalendarAdapter(Context context) {
         views.clear();
         for (int i = 0; i < 4; i++) {
-            views.add(new MonthCard(context));
+            views.add(new WeekCard(context));
         }
     }
 
@@ -40,13 +42,13 @@ public class WeekCalendarAdapter extends CalendarBaseAdapter {
     public void destroyItem(ViewGroup container, int position, Object object) {
     }
 
-    public MonthCard currentCard() {
+    public WeekCard currentCard() {
         return currentCard;
     }
 
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
-        currentCard = (MonthCard) object;
+        currentCard = (WeekCard) object;
         super.setPrimaryItem(container, position, object);
     }
 

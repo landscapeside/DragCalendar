@@ -10,6 +10,7 @@ import com.landscape.dragcalendar.R;
 import com.landscape.dragcalendar.adapter.WeekCalendarAdapter;
 
 import static com.landscape.dragcalendar.MotionEventUtil.dp2px;
+import static com.landscape.dragcalendar.Range.WEEK_HEIGHT;
 
 /**
  * Created by landscape on 2016/11/29.
@@ -17,7 +18,6 @@ import static com.landscape.dragcalendar.MotionEventUtil.dp2px;
 
 public class WeekView extends LinearLayout {
 
-    public static final int WEEK_HEIGHT = 50;
     ViewPager weekPager;
     WeekCalendarAdapter adapter;
 
@@ -26,8 +26,9 @@ public class WeekView extends LinearLayout {
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         setOrientation(VERTICAL);
 
-        weekPager = (ViewPager) View.inflate(getContext(), R.layout.calendar_pager, this);
-        ViewPager.LayoutParams layoutParams = (ViewPager.LayoutParams) weekPager.getLayoutParams();
+        View.inflate(getContext(), R.layout.calendar_pager, this);
+        weekPager = (ViewPager) findViewById(R.id.cal_pager);
+        ViewGroup.LayoutParams layoutParams = weekPager.getLayoutParams();
         layoutParams.height = dp2px(getContext(), WEEK_HEIGHT);
         weekPager.setLayoutParams(layoutParams);
 

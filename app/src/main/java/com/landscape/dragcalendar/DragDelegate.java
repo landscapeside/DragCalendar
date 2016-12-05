@@ -3,10 +3,15 @@ package com.landscape.dragcalendar;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.ViewDragHelper;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import static com.landscape.dragcalendar.MotionEventUtil.dp2px;
+import static com.landscape.dragcalendar.Range.MONTH_HEIGHT;
+import static com.landscape.dragcalendar.Range.WEEK_HEIGHT;
 
 /**
  * Created by 1 on 2016/9/18.
@@ -14,9 +19,9 @@ import android.view.ViewGroup;
 public class DragDelegate {
     private DragActionBridge consignor = null;
     Direction direction = Direction.STATIC;
-    Direction dragDirection = Direction.STATIC;
     int initY = 0, mActivePointerId = -1;
     private GestureDetectorCompat gestureDetector;
+    private float mDragPercent;
 
     public DragDelegate(DragActionBridge consignor) {
         gestureDetector = new GestureDetectorCompat(((ViewGroup) consignor).getContext(), new YScrollDetector());
@@ -33,6 +38,7 @@ public class DragDelegate {
                 mActivePointerId = MotionEventCompat.getPointerId(event, 0);
                 initY = (int) MotionEventUtil.getMotionEventY(event, mActivePointerId);
                 consignor.dragHelper().shouldInterceptTouchEvent(event);
+                mDragPercent = 0;
                 consignor.beforeMove();
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -42,11 +48,13 @@ public class DragDelegate {
                 direction = Direction.getDirection(
                         (int) (MotionEventUtil.getMotionEventY(event, mActivePointerId) - initY));
                 if (direction == Direction.DOWN) {
+                    Log.i("DragDelegate", "Direction.DOWN");
                     if (consignor.isCollapsAble()) {
                         if (!ScrollStatus.isDragging(consignor.scrollStatus())) {
                             if (ScrollViewCompat.canSmoothDown(consignor.target())) {
                                 return false;
                             } else {
+                                Log.i("DragDelegate", "Direction.DOWN   handleMotionEvent");
                                 return handleMotionEvent(event);
                             }
                         } else {
@@ -56,6 +64,7 @@ public class DragDelegate {
                         return false;
                     }
                 } else if (direction == Direction.UP) {
+                    Log.i("DragDelegate", "Direction.DOWN");
                     if (consignor.isCollapsAble()) {
                         if (!ScrollStatus.isDragging(consignor.scrollStatus()) && ScrollStatus.isMonth(consignor.scrollStatus())) {
                             return handleMotionEvent(event);
@@ -69,11 +78,9 @@ public class DragDelegate {
                 break;
             case MotionEvent.ACTION_CANCEL:
                 mActivePointerId = -1;
-                dragDirection = Direction.STATIC;
                 return false;
             case MotionEvent.ACTION_UP:
                 mActivePointerId = -1;
-                dragDirection = Direction.STATIC;
                 if (ScrollStatus.isDragging(consignor.scrollStatus())) {
                     return handleMotionEvent(event);
                 } else {
@@ -90,11 +97,14 @@ public class DragDelegate {
                 if (mActivePointerId == -1) {
                     return true;
                 }
+                float originalDragPercent = (float) Math.abs(consignor.contentTop()) / (float)dp2px(((ViewGroup) consignor).getContext(),MONTH_HEIGHT) + .4f;
+                mDragPercent = Math.min(1f, Math.abs(originalDragPercent));
+                consignor.setDrawPercent(mDragPercent);
+                Log.i("DragDelegate", "onTouchEvent  ACTION_MOVE");
                 consignor.dragHelper().processTouchEvent(event);
                 break;
             case MotionEvent.ACTION_UP:
                 mActivePointerId = -1;
-                dragDirection = Direction.STATIC;
                 consignor.dragHelper().processTouchEvent(event);
                 return true;
             default:
@@ -111,6 +121,7 @@ public class DragDelegate {
             cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
             consignor.target().dispatchTouchEvent(cancelEvent);
         }
+        Log.i("DragDelegate", "handleMotionEvent:" + (consignor.dragHelper().shouldInterceptTouchEvent(event)));
         return consignor.dragHelper().shouldInterceptTouchEvent(event) && gestureDetector.onTouchEvent(event);
     }
 
@@ -126,13 +137,17 @@ public class DragDelegate {
         this.consignor = consignor;
     }
 
+    public Direction getDirection() {
+        return direction;
+    }
+
     public interface DragActionBridge {
         ScrollStatus scrollStatus();
 
         int contentTop();
 
         ViewDragHelper dragHelper();
-
+        void setDrawPercent(float drawPercent);
         View target();
 
         void beforeMove();

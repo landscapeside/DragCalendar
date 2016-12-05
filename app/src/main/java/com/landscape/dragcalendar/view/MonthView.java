@@ -2,31 +2,22 @@ package com.landscape.dragcalendar.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.landscape.dragcalendar.R;
 import com.landscape.dragcalendar.adapter.MonthCalendarAdapter;
-import com.landscape.dragcalendar.presenter.CalendarPresenter;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.landscape.dragcalendar.MotionEventUtil.dp2px;
+import static com.landscape.dragcalendar.Range.MONTH_HEIGHT;
 
 /**
  * Created by landscape on 2016/11/29.
  */
 
 public class MonthView extends LinearLayout {
-    public static final int MONTH_HEIGHT = 300;
     ViewPager monthPager;
     MonthCalendarAdapter adapter;
 
@@ -35,8 +26,9 @@ public class MonthView extends LinearLayout {
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         setOrientation(VERTICAL);
 
-        monthPager = (ViewPager) View.inflate(getContext(), R.layout.calendar_pager, this);
-        ViewPager.LayoutParams layoutParams = (ViewPager.LayoutParams) monthPager.getLayoutParams();
+        View.inflate(getContext(), R.layout.calendar_pager, this);
+        monthPager = (ViewPager) findViewById(R.id.cal_pager);
+        ViewGroup.LayoutParams layoutParams = monthPager.getLayoutParams();
         layoutParams.height = dp2px(getContext(), MONTH_HEIGHT);
         monthPager.setLayoutParams(layoutParams);
 

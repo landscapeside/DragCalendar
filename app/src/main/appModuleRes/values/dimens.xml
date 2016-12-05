@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="of_alert_dialog_title_height">64dip</dimen>
+    <dimen name="of_alert_dialog_button_bar_height">48dip</dimen>
+    <!-- PullToRefresh start -->
+    <dimen name="indicator_right_padding">10dp</dimen>
+    <dimen name="indicator_corner_radius">12dp</dimen>
+    <dimen name="indicator_internal_padding">4dp</dimen>
+    <dimen name="header_footer_left_right_padding">24dp</dimen>
+    <dimen name="header_footer_top_bottom_padding">12dp</dimen>
+    <!-- PullToRefresh end -->
+    <dimen name="acrlayouticon_wh">50dp</dimen>
+    <dimen name="acrlayoutitem_wh">40dp</dimen>
+    <dimen name="acrlayout_radiu">50dp</dimen>
+    <!-- image progress size -->
+    <dimen name="image_progress_size">120px</dimen>
+    <!--  -->
+    <dimen name="calendar_day_headers_paddingbottom">4dp</dimen>
+    <dimen name="calendar_month_topmargin">16dp</dimen>
+    <dimen name="calendar_month_title_bottommargin">4dp</dimen>
+    <dimen name="calendar_text_medium">18sp</dimen>
+    <dimen name="calendar_text_small">14sp</dimen>
+
+    <!--actionbar-->
+    <dimen name="text_title_size">16sp</dimen>
+    <dimen name="text_action_size">13sp</dimen>
+    <dimen name="actionbar_height">48dp</dimen>
+
+</resources>

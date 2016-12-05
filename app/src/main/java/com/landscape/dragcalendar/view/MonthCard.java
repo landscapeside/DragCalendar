@@ -25,13 +25,14 @@ public class MonthCard extends LinearLayout implements CalendarCard {
         super(context);
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         setOrientation(VERTICAL);
-        setBackgroundResource(android.R.color.tertiary_text_light);
+        setBackgroundResource(android.R.color.darker_gray);
         View.inflate(context, R.layout.month, this);
 
     }
 
     @Override
     public void render(Calendar today) {
+        int pageMonth = (Integer.parseInt((String) getTag()));
         //一页显示一个月+7天，为42；
         for (int b = 0; b < 6; b++) {
             final ViewGroup view = (ViewGroup) getChildAt(b);
@@ -45,7 +46,7 @@ public class MonthCard extends LinearLayout implements CalendarCard {
 
                 //不是当前月不显示
                 int currentMonth = today.get(Calendar.MONTH);
-                if ((Integer.parseInt((String) getTag())) != currentMonth) {
+                if (pageMonth != currentMonth) {
                     dayOfWeek.setVisibility(INVISIBLE);
                     today.add(Calendar.DATE, 1);
                     continue;
@@ -76,7 +77,7 @@ public class MonthCard extends LinearLayout implements CalendarCard {
     }
 
     private void renderNormal(ViewGroup dayView,boolean containData) {
-        dayView.findViewById(R.id.cal_container).setBackgroundResource(R.drawable.corner_shape_blue);
+        dayView.findViewById(R.id.cal_container).setBackgroundResource(android.R.color.transparent);
         if (containData) {
             ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point);
             dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);

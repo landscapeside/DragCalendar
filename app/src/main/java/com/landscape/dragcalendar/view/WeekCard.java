@@ -23,7 +23,7 @@ public class WeekCard extends LinearLayout implements CalendarCard {
         super(context);
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         setOrientation(HORIZONTAL);
-        setBackgroundResource(android.R.color.tertiary_text_light);
+        setBackgroundResource(android.R.color.darker_gray);
         View.inflate(context, R.layout.week, this);
 
     }
@@ -48,7 +48,7 @@ public class WeekCard extends LinearLayout implements CalendarCard {
     }
 
     private void renderSelect(ViewGroup dayView, boolean containData) {
-        dayView.findViewById(R.id.cal_container).setBackgroundResource(R.drawable.corner_shape_blue);
+        dayView.setBackgroundResource(R.drawable.corner_shape_blue);
         if (containData) {
             ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point_select);
             dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);
@@ -58,7 +58,7 @@ public class WeekCard extends LinearLayout implements CalendarCard {
     }
 
     private void renderNormal(ViewGroup dayView, boolean containData) {
-        dayView.findViewById(R.id.cal_container).setBackgroundResource(R.drawable.corner_shape_blue);
+        dayView.setBackgroundResource(android.R.color.transparent);
         if (containData) {
             ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point);
             dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);

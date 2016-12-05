@@ -12,11 +12,20 @@
         android:layout_centerVertical="true"
         tools:text="2016年12月"/>
 
+    <ImageView
+        android:id="@+id/arrow_collapse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_close"/>
+
     <TextView
         android:id="@+id/tv_back_today"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@id/arrow_collapse"
         android:layout_centerVertical="true"
         android:text="返回今天"
         android:background="@drawable/corner_month_white"/>

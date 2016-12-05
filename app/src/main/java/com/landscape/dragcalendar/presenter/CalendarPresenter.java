@@ -2,6 +2,7 @@ package com.landscape.dragcalendar.presenter;
 
 import android.text.TextUtils;
 
+import com.landscape.dragcalendar.CalendarBar;
 import com.landscape.dragcalendar.DragCalendarLayout;
 import com.landscape.dragcalendar.utils.DateUtils;
 import com.landscape.dragcalendar.view.MonthView;
@@ -23,6 +24,7 @@ public class CalendarPresenter {
         private DragCalendarLayout dragCalendarLayout;
         private MonthView monthView;
         private WeekView weekView;
+        private CalendarBar calendarBar;
     }
 
     public ViewPackage viewPackage() {
@@ -33,15 +35,19 @@ public class CalendarPresenter {
     }
 
     public void registerDragCalendarLayout(DragCalendarLayout dragCalendarLayout) {
-        viewPackage.dragCalendarLayout = dragCalendarLayout;
+        viewPackage().dragCalendarLayout = dragCalendarLayout;
     }
 
     public void registerMonthView(MonthView monthView) {
-        viewPackage.monthView = monthView;
+        viewPackage().monthView = monthView;
     }
 
     public void registerWeekView(WeekView weekView) {
-        viewPackage.weekView = weekView;
+        viewPackage().weekView = weekView;
+    }
+
+    public void registerCalendarBar(CalendarBar calendarBar) {
+        viewPackage().calendarBar = calendarBar;
     }
 
     private CalendarPresenter() {
