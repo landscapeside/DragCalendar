@@ -1,6 +1,7 @@
 package com.landscape.dragcalendar.view;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -87,6 +88,8 @@ public class MonthCard extends LinearLayout implements CalendarCard {
     }
 
     private int calculatePos(int unitHeight,int line) {
+        Log.i("monthCard", "line:" + line);
+        Log.i("monthCard", "unitHeight:" + unitHeight);
         return unitHeight * line;
     }
 

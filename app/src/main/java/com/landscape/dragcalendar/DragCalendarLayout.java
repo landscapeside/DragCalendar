@@ -34,14 +34,15 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     ViewGroup calendarTitle;
 
     int contentTop = -1, titleHeight = 0;
+    private float mDragPercent;
 
     CalendarDragListener dragListener;
-    ScrollStatus status = ScrollStatus.IDLE;
+    ScrollStatus status = ScrollStatus.IDLE,scrollStatus = ScrollStatus.IDLE;
 
     public DragCalendarLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        dragHelper = ViewDragHelper.create(this, 0.3f, dragHelperCallback);
+        dragHelper = ViewDragHelper.create(this, dragHelperCallback);
         dragDelegate = new DragDelegate(this);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DragCalendarLayout);
@@ -152,16 +153,18 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
             status = ScrollStatus.DRAGGING;
             if (child == mContent) {
                 if (contentTop + dy > getPaddingTop() + dp2px(getContext(),MONTH_HEIGHT) + titleHeight) {
-                    Log.i("drag", "clampViewPositionVertical1:" + (getPaddingTop() + dp2px(getContext(), MONTH_HEIGHT) + titleHeight));
                     return getPaddingTop() + dp2px(getContext(),MONTH_HEIGHT) + titleHeight;
                 } else if (contentTop + dy < getPaddingTop() + dp2px(getContext(),WEEK_HEIGHT) + titleHeight) {
-                    Log.i("drag", "clampViewPositionVertical2:"+(getPaddingTop() + dp2px(getContext(),WEEK_HEIGHT) + titleHeight));
                     return getPaddingTop() + dp2px(getContext(),WEEK_HEIGHT) + titleHeight;
                 } else {
-                    Log.i("drag", "clampViewPositionVertical3:"+top);
                     return top;
                 }
             } else if (child == monthView) {
+                Log.i("dragViewHelper", "monthView top:" + top);
+                Log.i("dragViewHelper", "monthView titleHeight:" + (getPaddingTop() + titleHeight));
+                Log.i("dragViewHelper", "monthView getFixedPos:" + (getPaddingTop() + titleHeight - monthView.getFixedPos()));
+
+
                 return Math.max(Math.min(top, getPaddingTop() + titleHeight), getPaddingTop() + titleHeight - monthView.getFixedPos());
             } else if (child == weekView) {
                 return getPaddingTop() + titleHeight;
@@ -177,22 +180,23 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             super.onViewReleased(releasedChild, xvel, yvel);
-//            if (dragDelegate.getDirection() == Direction.DOWN) {
-//                setExpand(true);
-//            } else if (dragDelegate.getDirection() == Direction.UP) {
-//                setExpand(false);
-//            }
+            if (dragDelegate.getDirection() == Direction.DOWN) {
+                setExpand(true);
+            } else if (dragDelegate.getDirection() == Direction.UP) {
+                setExpand(false);
+            }
         }
 
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             if (changedView == mContent) {
-                if (top < getPaddingTop() + titleHeight + dp2px(getContext(),WEEK_HEIGHT)) {
+                if ((contentTop + dy) < getPaddingTop() + titleHeight + dp2px(getContext(),WEEK_HEIGHT)) {
                     contentTop = getPaddingTop() + titleHeight + dp2px(getContext(),WEEK_HEIGHT);
                 } else {
-                    contentTop = top;
+                    contentTop += dy;
                 }
             } else {
+                Log.i("dragLayout", "onViewPositionChangedonViewPositionChangedonViewPositionChangedonViewPositionChanged");
                 if ((contentTop + dy) < getPaddingTop() + titleHeight + dp2px(getContext(),WEEK_HEIGHT)) {
                     contentTop = getPaddingTop() + titleHeight + dp2px(getContext(),WEEK_HEIGHT);
                 } else {
@@ -201,6 +205,11 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
             }
             layout();
 //            invalidate();
+            monthView.setVisibility(VISIBLE);
+            weekView.setVisibility(VISIBLE);
+            float originalDragPercent = (float) Math.abs(contentTop) / (float)dp2px(getContext(),MONTH_HEIGHT-WEEK_HEIGHT);
+            mDragPercent = Math.min(1f, Math.abs(originalDragPercent));
+            setDrawPercent(mDragPercent);
         }
     };
 
@@ -210,12 +219,14 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
 
     public void setExpand(boolean expand, boolean anim) {
         if (anim) {
+            lastAnimState = true;
             if (expand) {
                 if (dragHelper.smoothSlideViewTo(mContent, 0, dp2px(getContext(), MONTH_HEIGHT))) {
                     ViewCompat.postInvalidateOnAnimation(this);
-                    status = ScrollStatus.MONTH;
+                    scrollStatus = ScrollStatus.MONTH;
                 } else {
                     status = ScrollStatus.MONTH;
+                    scrollStatus = status;
                     if (dragListener != null) {
                         dragListener.onExpand();
                     }
@@ -223,12 +234,13 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
             } else {
                 if (dragHelper.smoothSlideViewTo(mContent, 0, dp2px(getContext(), WEEK_HEIGHT))) {
                     ViewCompat.postInvalidateOnAnimation(this);
-                    status = ScrollStatus.WEEK;
+                    scrollStatus = ScrollStatus.WEEK;
                 } else {
                     if (dragListener != null) {
                         dragListener.onFold();
                     }
                     status = ScrollStatus.WEEK;
+                    scrollStatus = status;
                 }
             }
         } else {
@@ -236,15 +248,25 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
         }
     }
 
-    boolean animContinue = true;
+    boolean lastAnimState = true, animContinue = true;
 
     @Override
     public void computeScroll() {
         animContinue = dragHelper.continueSettling(true);
-        if (animContinue) {
+        if (animContinue && lastAnimState == animContinue) {
             ViewCompat.postInvalidateOnAnimation(this);
-        } else {
+        } else if (!animContinue && lastAnimState != animContinue) {
+            if (ScrollStatus.isMonth(scrollStatus)) {
+                monthView.setVisibility(VISIBLE);
+                weekView.setVisibility(GONE);
+            } else if (ScrollStatus.isWeek(scrollStatus)) {
+                monthView.setVisibility(GONE);
+                weekView.setVisibility(VISIBLE);
+            } else if (ScrollStatus.isIdle(scrollStatus)) {
 
+            }
+            status = scrollStatus;
+            lastAnimState = animContinue;
         }
     }
 
@@ -277,9 +299,9 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
         return dragHelper;
     }
 
-    @Override
     public void setDrawPercent(float drawPercent) {
-
+        monthView.setAlpha(drawPercent);
+        weekView.setAlpha(1 - drawPercent);
     }
 
     @Override

@@ -21,7 +21,6 @@ public class DragDelegate {
     Direction direction = Direction.STATIC;
     int initY = 0, mActivePointerId = -1;
     private GestureDetectorCompat gestureDetector;
-    private float mDragPercent;
 
     public DragDelegate(DragActionBridge consignor) {
         gestureDetector = new GestureDetectorCompat(((ViewGroup) consignor).getContext(), new YScrollDetector());
@@ -38,7 +37,6 @@ public class DragDelegate {
                 mActivePointerId = MotionEventCompat.getPointerId(event, 0);
                 initY = (int) MotionEventUtil.getMotionEventY(event, mActivePointerId);
                 consignor.dragHelper().shouldInterceptTouchEvent(event);
-                mDragPercent = 0;
                 consignor.beforeMove();
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -48,13 +46,11 @@ public class DragDelegate {
                 direction = Direction.getDirection(
                         (int) (MotionEventUtil.getMotionEventY(event, mActivePointerId) - initY));
                 if (direction == Direction.DOWN) {
-                    Log.i("DragDelegate", "Direction.DOWN");
                     if (consignor.isCollapsAble()) {
                         if (!ScrollStatus.isDragging(consignor.scrollStatus())) {
                             if (ScrollViewCompat.canSmoothDown(consignor.target())) {
                                 return false;
                             } else {
-                                Log.i("DragDelegate", "Direction.DOWN   handleMotionEvent");
                                 return handleMotionEvent(event);
                             }
                         } else {
@@ -64,12 +60,15 @@ public class DragDelegate {
                         return false;
                     }
                 } else if (direction == Direction.UP) {
-                    Log.i("DragDelegate", "Direction.DOWN");
                     if (consignor.isCollapsAble()) {
-                        if (!ScrollStatus.isDragging(consignor.scrollStatus()) && ScrollStatus.isMonth(consignor.scrollStatus())) {
-                            return handleMotionEvent(event);
+                        if (!ScrollStatus.isDragging(consignor.scrollStatus())) {
+                            if (ScrollStatus.isMonth(consignor.scrollStatus())) {
+                                return handleMotionEvent(event);
+                            } else {
+                                return false;
+                            }
                         } else {
-                            return false;
+                            return handleMotionEvent(event);
                         }
                     } else {
                         return false;
@@ -97,10 +96,6 @@ public class DragDelegate {
                 if (mActivePointerId == -1) {
                     return true;
                 }
-                float originalDragPercent = (float) Math.abs(consignor.contentTop()) / (float)dp2px(((ViewGroup) consignor).getContext(),MONTH_HEIGHT) + .4f;
-                mDragPercent = Math.min(1f, Math.abs(originalDragPercent));
-                consignor.setDrawPercent(mDragPercent);
-                Log.i("DragDelegate", "onTouchEvent  ACTION_MOVE");
                 consignor.dragHelper().processTouchEvent(event);
                 break;
             case MotionEvent.ACTION_UP:
@@ -111,18 +106,16 @@ public class DragDelegate {
                 consignor.dragHelper().processTouchEvent(event);
                 break;
         }
-        initY = (int) MotionEventUtil.getMotionEventY(event, mActivePointerId);
         return true;
     }
 
     private boolean handleMotionEvent(MotionEvent event) {
         if (!ScrollStatus.isDragging(consignor.scrollStatus())) {
             MotionEvent cancelEvent = MotionEvent.obtain(event);
-            cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
+            cancelEvent.setAction(MotionEvent.ACTION_UP);
             consignor.target().dispatchTouchEvent(cancelEvent);
         }
-        Log.i("DragDelegate", "handleMotionEvent:" + (consignor.dragHelper().shouldInterceptTouchEvent(event)));
-        return consignor.dragHelper().shouldInterceptTouchEvent(event) && gestureDetector.onTouchEvent(event);
+        return gestureDetector.onTouchEvent(event) && consignor.dragHelper().shouldInterceptTouchEvent(event);
     }
 
     class YScrollDetector extends GestureDetector.SimpleOnGestureListener {
@@ -147,7 +140,6 @@ public class DragDelegate {
         int contentTop();
 
         ViewDragHelper dragHelper();
-        void setDrawPercent(float drawPercent);
         View target();
 
         void beforeMove();
