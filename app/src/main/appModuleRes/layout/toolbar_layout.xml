@@ -14,7 +14,7 @@
         android:minHeight="@dimen/actionbar_height"
         android:background="?attr/colorPrimary"
         android:popupTheme="@style/AppTheme.PopupOverlay"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -27,7 +27,8 @@
             android:gravity="center"
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
-            android:ellipsize="end" />
+            android:ellipsize="end"
+            android:text="标题"/>
 
         <LinearLayout
             android:id="@+id/action_layout"

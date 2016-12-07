@@ -17,7 +17,7 @@ import java.util.Calendar;
  * Created by landscape on 2016/11/30.
  */
 
-public class WeekCard extends LinearLayout implements CalendarCard {
+public class WeekCard extends LinearLayout implements ICalendarCard {
 
     public WeekCard(Context context) {
         super(context);
@@ -33,14 +33,15 @@ public class WeekCard extends LinearLayout implements CalendarCard {
         for (int a = 0; a < 7; a++) {
             final int dayOfMonth = today.get(Calendar.DAY_OF_MONTH);
             final ViewGroup dayOfWeek = (ViewGroup) getChildAt(a);
-            ((TextView) dayOfWeek.findViewById(R.id.gongli)).setText(dayOfMonth + "");
             dayOfWeek.setTag(DateUtils.getTagTimeStr(today));
             dayOfWeek.setOnClickListener(v -> CalendarPresenter.instance().setSelectTime(dayOfWeek.getTag().toString()));
 
             //如果是选中天的话显示为红色
             if (CalendarPresenter.instance().getSelectTime().equals(DateUtils.getTagTimeStr(today))) {
+                ((TextView) dayOfWeek.findViewById(R.id.gongli)).setText(DateUtils.getTagTimeStrByMouthandDay(today));
                 renderSelect(dayOfWeek, true);
             } else {
+                ((TextView) dayOfWeek.findViewById(R.id.gongli)).setText(dayOfMonth + "");
                 renderNormal(dayOfWeek, true);
             }
             today.add(Calendar.DATE, 1);

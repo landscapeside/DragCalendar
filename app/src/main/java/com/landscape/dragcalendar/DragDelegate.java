@@ -3,23 +3,23 @@ package com.landscape.dragcalendar;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.ViewDragHelper;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import static com.landscape.dragcalendar.MotionEventUtil.dp2px;
-import static com.landscape.dragcalendar.Range.MONTH_HEIGHT;
-import static com.landscape.dragcalendar.Range.WEEK_HEIGHT;
+import com.landscape.dragcalendar.constant.Direction;
+import com.landscape.dragcalendar.constant.ScrollStatus;
+import com.landscape.dragcalendar.utils.MotionEventUtil;
+import com.landscape.dragcalendar.utils.ScrollViewCompat;
 
 /**
  * Created by 1 on 2016/9/18.
  */
 public class DragDelegate {
     private DragActionBridge consignor = null;
-    Direction direction = Direction.STATIC;
-    int initY = 0, mActivePointerId = -1;
+    Direction direction = Direction.STATIC, touchDirection = Direction.STATIC;
+    int initY = 0, lastY = 0, mActivePointerId = -1;
     private GestureDetectorCompat gestureDetector;
 
     public DragDelegate(DragActionBridge consignor) {
@@ -36,6 +36,7 @@ public class DragDelegate {
             case MotionEvent.ACTION_DOWN:
                 mActivePointerId = MotionEventCompat.getPointerId(event, 0);
                 initY = (int) MotionEventUtil.getMotionEventY(event, mActivePointerId);
+                lastY = initY;
                 consignor.dragHelper().shouldInterceptTouchEvent(event);
                 consignor.beforeMove();
                 break;
@@ -43,12 +44,14 @@ public class DragDelegate {
                 if (mActivePointerId == -1) {
                     return false;
                 }
-                direction = Direction.getDirection(
-                        (int) (MotionEventUtil.getMotionEventY(event, mActivePointerId) - initY));
+                float x = MotionEventUtil.getMotionEventX(event, mActivePointerId);
+                float y = MotionEventUtil.getMotionEventY(event, mActivePointerId);
+                direction = Direction.getDirection((int) (y - initY));
                 if (direction == Direction.DOWN) {
                     if (consignor.isCollapsAble()) {
                         if (!ScrollStatus.isDragging(consignor.scrollStatus())) {
-                            if (ScrollViewCompat.canSmoothDown(consignor.target())) {
+                            if (ScrollViewCompat.canSmoothDown(consignor.target())
+                                    && consignor.isScrollContent((int) x, (int) y)) {
                                 return false;
                             } else {
                                 return handleMotionEvent(event);
@@ -91,11 +94,13 @@ public class DragDelegate {
 
     public boolean onTouchEvent(MotionEvent event) {
         final int action = MotionEventCompat.getActionMasked(event);
+        float y = MotionEventUtil.getMotionEventY(event, mActivePointerId);
         switch (action) {
             case MotionEvent.ACTION_MOVE:
                 if (mActivePointerId == -1) {
                     return true;
                 }
+                touchDirection = Direction.getDirection((int) (y - lastY));
                 consignor.dragHelper().processTouchEvent(event);
                 break;
             case MotionEvent.ACTION_UP:
@@ -106,6 +111,7 @@ public class DragDelegate {
                 consignor.dragHelper().processTouchEvent(event);
                 break;
         }
+        lastY = (int) y;
         return true;
     }
 
@@ -131,16 +137,17 @@ public class DragDelegate {
     }
 
     public Direction getDirection() {
-        return direction;
+        return touchDirection == Direction.STATIC ? direction : touchDirection;
     }
 
     public interface DragActionBridge {
         ScrollStatus scrollStatus();
 
-        int contentTop();
-
         ViewDragHelper dragHelper();
+
         View target();
+
+        boolean isScrollContent(int x, int y);
 
         void beforeMove();
 

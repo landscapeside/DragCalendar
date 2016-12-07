@@ -14,12 +14,14 @@ import com.landscape.dragcalendar.utils.DateUtils;
 
 import java.util.Calendar;
 
+import static com.landscape.dragcalendar.utils.MotionEventUtil.dp2px;
+import static com.landscape.dragcalendar.constant.Range.DAY_HEIGHT;
+
 /**
  * Created by landscape on 2016/11/30.
  */
 
-public class MonthCard extends LinearLayout implements CalendarCard {
-    int selectLine = 0;
+public class MonthCard extends LinearLayout implements ICalendarCard {
     int selectPos = 0;
 
     public MonthCard(Context context) {
@@ -45,30 +47,28 @@ public class MonthCard extends LinearLayout implements CalendarCard {
 
                 dayOfWeek.setOnClickListener(v -> CalendarPresenter.instance().setSelectTime(dayOfWeek.getTag().toString()));
 
-                //不是当前月不显示
+                //不是当前月浅色显示
                 int currentMonth = today.get(Calendar.MONTH);
                 if (pageMonth != currentMonth) {
-                    dayOfWeek.setVisibility(INVISIBLE);
+                    renderGray(dayOfWeek,true);
                     today.add(Calendar.DATE, 1);
-                    continue;
                 } else {
-                    dayOfWeek.setVisibility(VISIBLE);
+                    //如果是选中天的话显示为红色
+                    if (CalendarPresenter.instance().getSelectTime().equals(DateUtils.getTagTimeStr(today))) {
+                        selectPos = calculatePos(b);
+                        renderSelect(dayOfWeek,true);
+                    } else {
+                        renderNormal(dayOfWeek,true);
+                    }
+                    today.add(Calendar.DATE, 1);
                 }
-                //如果是选中天的话显示为红色
-                if (CalendarPresenter.instance().getSelectTime().equals(DateUtils.getTagTimeStr(today))) {
-                    selectLine = b;
-                    selectPos = calculatePos(dayOfWeek.getMeasuredHeight(),selectLine);
-                    renderSelect(dayOfWeek,true);
-                } else {
-                    renderNormal(dayOfWeek,true);
-                }
-                today.add(Calendar.DATE, 1);
             }
         }
     }
 
     private void renderSelect(ViewGroup dayView,boolean containData) {
         dayView.findViewById(R.id.cal_container).setBackgroundResource(R.drawable.corner_shape_blue);
+        ((TextView) dayView.findViewById(R.id.gongli)).setTextColor(getResources().getColor(R.color.white));
         if (containData) {
             ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point_select);
             dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);
@@ -79,6 +79,7 @@ public class MonthCard extends LinearLayout implements CalendarCard {
 
     private void renderNormal(ViewGroup dayView,boolean containData) {
         dayView.findViewById(R.id.cal_container).setBackgroundResource(android.R.color.transparent);
+        ((TextView) dayView.findViewById(R.id.gongli)).setTextColor(getResources().getColor(R.color.white));
         if (containData) {
             ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point);
             dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);
@@ -87,14 +88,19 @@ public class MonthCard extends LinearLayout implements CalendarCard {
         }
     }
 
-    private int calculatePos(int unitHeight,int line) {
-        Log.i("monthCard", "line:" + line);
-        Log.i("monthCard", "unitHeight:" + unitHeight);
-        return unitHeight * line;
+    private void renderGray(ViewGroup dayView,boolean containData) {
+        dayView.findViewById(R.id.cal_container).setBackgroundResource(android.R.color.transparent);
+        ((TextView) dayView.findViewById(R.id.gongli)).setTextColor(getResources().getColor(R.color.text_color_gray));
+        if (containData) {
+            ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point);
+            dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);
+        } else {
+            dayView.findViewById(R.id.imv_point).setVisibility(INVISIBLE);
+        }
     }
 
-    public int getSelectLine() {
-        return selectLine;
+    private int calculatePos(int line) {
+        return dp2px(getContext(),DAY_HEIGHT) * line;
     }
 
     public int getSelectPos() {

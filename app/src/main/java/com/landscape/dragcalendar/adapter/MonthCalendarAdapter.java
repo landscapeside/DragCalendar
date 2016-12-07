@@ -1,13 +1,12 @@
 package com.landscape.dragcalendar.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.landscape.dragcalendar.presenter.CalendarPresenter;
 import com.landscape.dragcalendar.utils.DateUtils;
-import com.landscape.dragcalendar.view.CalendarCard;
-import com.landscape.dragcalendar.view.ICallbk;
+import com.landscape.dragcalendar.view.ICalendarCard;
 import com.landscape.dragcalendar.view.MonthCard;
 
 import java.util.ArrayList;
@@ -85,13 +84,12 @@ public class MonthCalendarAdapter extends CalendarBaseAdapter {
         //找到这个月的第一天所在星期的周日
         today.add(Calendar.DAY_OF_MONTH, -(today.get(Calendar.DAY_OF_MONTH) - 1));
 
-
         int day_of_week = today.get(Calendar.DAY_OF_WEEK) - 1;
         if (day_of_week == 0) {
             day_of_week = 7;
         }
         today.add(Calendar.DATE, -day_of_week);
-        ((CalendarCard)view).render(today);
+        ((ICalendarCard)view).render(today);
 
     }
 }

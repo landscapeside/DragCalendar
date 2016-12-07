@@ -78,7 +78,7 @@ public class DateUtils {
     public static String getTagTimeStrByMouthandDay(Calendar calendar) {
         String ss = "";
         if (calendar != null) {
-            ss = DateUtils.longToStr(calendar.getTimeInMillis(), "MM月dd日");
+            ss = DateUtils.longToStr(calendar.getTimeInMillis(), "MM月dd");
         }
         return ss;
     }

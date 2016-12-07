@@ -18,7 +18,7 @@ import java.util.GregorianCalendar;
 public class CalendarPresenter {
     private static CalendarPresenter instance;
     private ViewPackage viewPackage;
-    private String selectTime;
+    private String selectTime,todayTime;
 
     public class ViewPackage{
         private DragCalendarLayout dragCalendarLayout;
@@ -66,7 +66,7 @@ public class CalendarPresenter {
         Calendar today = new GregorianCalendar();
         today.setTimeInMillis(System.currentTimeMillis());
         selectTime = DateUtils.getTagTimeStr(today);
-
+        todayTime = selectTime;
     }
 
 
@@ -80,13 +80,30 @@ public class CalendarPresenter {
         }
         if (!this.selectTime.equals(selectTime)) {
             this.selectTime = selectTime;
-            // TODO: 2016/12/2 refresh UI
-
-
+            if (callbk != null) {
+                callbk.onSelect(selectTime,selectTime.equals(todayTime));
+            }
         }
+        viewPackage().dragCalendarLayout.focusCalendar();
+        close();
     }
 
     public void backToday() {
+        setSelectTime(todayTime);
+    }
 
+    public void close() {
+        viewPackage().dragCalendarLayout.setExpand(false);
+    }
+
+    public interface ICallbk{
+        void onSelect(String selectTime,boolean isToday);
+    }
+    ICallbk callbk = null;
+    public void setCallbk(ICallbk callbk) {
+        this.callbk = callbk;
+        if (callbk != null) {
+            callbk.onSelect(selectTime,selectTime.equals(todayTime));
+        }
     }
 }

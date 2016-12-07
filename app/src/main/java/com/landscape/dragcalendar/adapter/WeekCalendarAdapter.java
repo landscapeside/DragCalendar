@@ -4,10 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.landscape.dragcalendar.view.CalendarCard;
-import com.landscape.dragcalendar.view.MonthCard;
+import com.landscape.dragcalendar.view.ICalendarCard;
 import com.landscape.dragcalendar.view.WeekCard;
-import com.landscape.dragcalendar.view.WeekView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -85,7 +83,7 @@ public class WeekCalendarAdapter extends CalendarBaseAdapter {
         //距离当前时间的周数
         int week = getCount() / 2 - position;
         today.add(Calendar.DATE, -week * 7);
-        ((CalendarCard)view).render(today);
+        ((ICalendarCard)view).render(today);
 
     }
 }

@@ -1,4 +1,4 @@
-package com.landscape.dragcalendar;
+package com.landscape.dragcalendar.utils;
 
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;

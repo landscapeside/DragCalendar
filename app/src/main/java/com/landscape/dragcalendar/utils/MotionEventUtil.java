@@ -1,4 +1,4 @@
-package com.landscape.dragcalendar;
+package com.landscape.dragcalendar.utils;
 
 import android.content.Context;
 import android.util.TypedValue;
@@ -14,6 +14,14 @@ public class MotionEventUtil {
             return -1;
         }
         return android.support.v4.view.MotionEventCompat.getY(ev, index);
+    }
+
+    public static float getMotionEventX(MotionEvent ev, int activePointerId) {
+        final int index = android.support.v4.view.MotionEventCompat.findPointerIndex(ev, activePointerId);
+        if (index < 0) {
+            return -1;
+        }
+        return android.support.v4.view.MotionEventCompat.getX(ev, index);
     }
 
     public static int dp2px(Context context,int dp) {

@@ -8,16 +8,21 @@ import android.widget.LinearLayout;
 
 import com.landscape.dragcalendar.R;
 import com.landscape.dragcalendar.adapter.MonthCalendarAdapter;
+import com.landscape.dragcalendar.presenter.CalendarPresenter;
+import com.landscape.dragcalendar.utils.DateUtils;
 
 
-import static com.landscape.dragcalendar.MotionEventUtil.dp2px;
-import static com.landscape.dragcalendar.Range.MONTH_HEIGHT;
+import java.util.Calendar;
+import java.util.Date;
+
+import static com.landscape.dragcalendar.utils.MotionEventUtil.dp2px;
+import static com.landscape.dragcalendar.constant.Range.MONTH_HEIGHT;
 
 /**
  * Created by landscape on 2016/11/29.
  */
 
-public class MonthView extends LinearLayout {
+public class MonthView extends LinearLayout implements ICalendarView {
     ViewPager monthPager;
     MonthCalendarAdapter adapter;
 
@@ -35,6 +40,22 @@ public class MonthView extends LinearLayout {
         adapter = new MonthCalendarAdapter(context);
         monthPager.setAdapter(adapter);
         monthPager.setCurrentItem(1200, true);
+    }
+
+    @Override
+    public void focusCalendar() {
+        int pageMonth = (Integer.parseInt((String) adapter.currentCard().getTag()));
+        Date selectDate = DateUtils.stringToDate(CalendarPresenter.instance().getSelectTime());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectDate);
+        if (pageMonth > calendar.get(Calendar.MONTH)) {
+            //上个月
+            monthPager.setCurrentItem(monthPager.getCurrentItem() - 1);
+        } else if (pageMonth < calendar.get(Calendar.MONTH)) {
+            //下个月
+            monthPager.setCurrentItem(monthPager.getCurrentItem() + 1);
+        }
+        adapter.notifyDataSetChanged();
     }
 
     public int getFixedPos() {

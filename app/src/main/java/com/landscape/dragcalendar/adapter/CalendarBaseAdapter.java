@@ -8,6 +8,8 @@ import android.view.View;
  */
 public class CalendarBaseAdapter extends PagerAdapter {
 
+    int mChildCount = 0;
+
     /**
      * 是否拦截事件
      * */
@@ -15,6 +17,21 @@ public class CalendarBaseAdapter extends PagerAdapter {
 
     public static boolean is() {
         return is;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        mChildCount = getCount();
+        super.notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        if (mChildCount > 0) {
+            mChildCount--;
+            return POSITION_NONE;
+        }
+        return super.getItemPosition(object);
     }
 
     @Override

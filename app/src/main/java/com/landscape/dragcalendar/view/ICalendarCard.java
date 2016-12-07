@@ -8,6 +8,6 @@ import java.util.Calendar;
  * Created by landscape on 2016/11/30.
  */
 
-public interface CalendarCard {
+public interface ICalendarCard {
     void render(final Calendar today);
 }

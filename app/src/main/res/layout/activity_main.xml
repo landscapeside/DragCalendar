@@ -7,6 +7,11 @@
     android:layout_height="match_parent"
     tools:context="com.landscape.dragcalendar.simple.MainActivity">
 
+    <com.landscape.dragcalendar.CalendarBar
+        android:id="@+id/cal_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <include
         android:id="@+id/actionbar"
         layout="@layout/toolbar_layout" />
@@ -18,6 +23,7 @@
         android:layout_below="@id/actionbar">
 
         <com.landscape.dragcalendar.DragCalendarLayout
+            android:id="@+id/drag_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:calendar_content="@+id/scroll_test">
@@ -32,7 +38,7 @@
                     android:id="@+id/tv_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="adfasdfasdfasdfasdfsa"
+                    android:text="adfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\n"
                     android:background="@color/red"/>
 
             </ScrollView>
