@@ -12,17 +12,17 @@
     <!--android:textColor="@color/black_deep"-->
     <!--android:text="日"-->
     <!--/>-->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/cal_container"
         android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:orientation="vertical">
+        android:layout_height="30dp">
 
         <TextView
             android:id="@+id/gongli"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginTop="3dp"
+            android:layout_centerHorizontal="true"
             android:text="12"
             android:textColor="@color/white"
             android:textSize="@dimen/app_size"
@@ -32,9 +32,10 @@
             android:id="@+id/imv_point"
             android:layout_width="5dip"
             android:layout_height="5dip"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="3dip"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/gongli"
+            android:layout_marginTop="1dip"
             android:src="@drawable/calendar_item_point"/>
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
