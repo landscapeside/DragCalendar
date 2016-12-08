@@ -47,11 +47,20 @@ public class CalendarBar extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         post(() -> {
-            int height = ((AppCompatActivity) getContext()).getSupportActionBar().getHeight();
-            ViewGroup.LayoutParams layoutParams = barContainer.getLayoutParams();
-            layoutParams.height = height;
-            barContainer.setLayoutParams(layoutParams);
-            invalidate();
+            int height;
+            if (getContext() instanceof AppCompatActivity) {
+                height = ((AppCompatActivity) getContext()).getSupportActionBar().getHeight();
+                ViewGroup.LayoutParams layoutParams = barContainer.getLayoutParams();
+                layoutParams.height = height;
+                barContainer.setLayoutParams(layoutParams);
+                invalidate();
+            } else if (getContext() instanceof Activity) {
+                height = ((Activity) getContext()).getActionBar().getHeight();
+                ViewGroup.LayoutParams layoutParams = barContainer.getLayoutParams();
+                layoutParams.height = height;
+                barContainer.setLayoutParams(layoutParams);
+                invalidate();
+            }
         });
     }
 }
