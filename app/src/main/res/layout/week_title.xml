@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="15dp"
-    android:background="@color/common_bg"
+    android:background="@color/calendar_gray_bg"
     android:orientation="horizontal">
 
     <TextView
@@ -11,7 +11,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="日"
-        android:textColor="@color/purple" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/title_size"/>
 
     <TextView
         android:layout_width="0dp"
@@ -19,7 +20,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/calendar_Mon"
-        android:textColor="@color/purple" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/title_size"/>
 
     <TextView
         android:layout_width="0dp"
@@ -27,7 +29,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/calendar_Tus"
-        android:textColor="@color/purple" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/title_size"/>
 
     <TextView
         android:layout_width="0dp"
@@ -35,7 +38,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/calendar_Wes"
-        android:textColor="@color/purple" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/title_size"/>
 
     <TextView
         android:layout_width="0dp"
@@ -43,7 +47,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/calendar_Thus"
-        android:textColor="@color/purple" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/title_size"/>
 
     <TextView
         android:layout_width="0dp"
@@ -51,7 +56,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/calendar_Fri"
-        android:textColor="@color/purple" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/title_size"/>
 
     <TextView
         android:layout_width="0dp"
@@ -59,6 +65,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/calendar_Sat"
-        android:textColor="@color/purple" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/title_size"/>
 
 </LinearLayout>

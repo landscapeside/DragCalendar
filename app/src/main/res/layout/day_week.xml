@@ -1,28 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/cal_container"
-    android:layout_width="0dp"
-    android:layout_height="40dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_weight="1"
+    android:padding="7.5dp"
     android:gravity="center"
     android:orientation="vertical">
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:textColor="@color/black_deep"-->
+    <!--android:text="日"-->
+    <!--/>-->
+    <LinearLayout
+        android:id="@+id/cal_container"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/gongli"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="12"
-        android:textColor="@color/white"
-        android:textSize="@dimen/app_size"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/gongli"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="12"
+            android:textColor="@color/white"
+            android:textSize="@dimen/app_size"
+            android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/imv_point"
-        android:layout_width="5dip"
-        android:layout_height="5dip"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="5dip"
-        android:src="@drawable/calendar_item_point"/>
+        <ImageView
+            android:id="@+id/imv_point"
+            android:layout_width="5dip"
+            android:layout_height="5dip"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="3dip"
+            android:src="@drawable/calendar_item_point"/>
+    </LinearLayout>
 
 </LinearLayout>

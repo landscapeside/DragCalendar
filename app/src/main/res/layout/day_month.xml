@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="1"
+    android:padding="7.5dp"
     android:gravity="center"
     android:orientation="vertical">
     <!--<TextView-->
@@ -13,8 +14,8 @@
     <!--/>-->
     <LinearLayout
         android:id="@+id/cal_container"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:orientation="vertical">
 
         <TextView
@@ -32,7 +33,7 @@
             android:layout_width="5dip"
             android:layout_height="5dip"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="5dip"
+            android:layout_marginTop="3dip"
             android:src="@drawable/calendar_item_point"/>
     </LinearLayout>
 

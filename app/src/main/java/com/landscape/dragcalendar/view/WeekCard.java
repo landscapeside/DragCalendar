@@ -12,6 +12,7 @@ import com.landscape.dragcalendar.presenter.CalendarPresenter;
 import com.landscape.dragcalendar.utils.DateUtils;
 
 import java.util.Calendar;
+import java.util.Map;
 
 /**
  * Created by landscape on 2016/11/30.
@@ -23,7 +24,7 @@ public class WeekCard extends LinearLayout implements ICalendarCard {
         super(context);
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         setOrientation(HORIZONTAL);
-        setBackgroundResource(android.R.color.darker_gray);
+        setBackgroundResource(R.color.calendar_gray_bg);
         View.inflate(context, R.layout.week, this);
 
     }
@@ -39,18 +40,18 @@ public class WeekCard extends LinearLayout implements ICalendarCard {
             //如果是选中天的话显示为红色
             if (CalendarPresenter.instance().getSelectTime().equals(DateUtils.getTagTimeStr(today))) {
                 ((TextView) dayOfWeek.findViewById(R.id.gongli)).setText(DateUtils.getTagTimeStrByMouthandDay(today));
-                renderSelect(dayOfWeek, true);
+                renderSelect(dayOfWeek, DateUtils.getTagTimeStr(today));
             } else {
                 ((TextView) dayOfWeek.findViewById(R.id.gongli)).setText(dayOfMonth + "");
-                renderNormal(dayOfWeek, true);
+                renderNormal(dayOfWeek, DateUtils.getTagTimeStr(today));
             }
             today.add(Calendar.DATE, 1);
         }
     }
 
-    private void renderSelect(ViewGroup dayView, boolean containData) {
-        dayView.setBackgroundResource(R.drawable.corner_shape_blue);
-        if (containData) {
+    private void renderSelect(ViewGroup dayView, String date) {
+        dayView.findViewById(R.id.cal_container).setBackgroundResource(R.drawable.corner_shape_blue);
+        if (CalendarPresenter.instance().containData(date)) {
             ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point_select);
             dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);
         } else {
@@ -58,9 +59,9 @@ public class WeekCard extends LinearLayout implements ICalendarCard {
         }
     }
 
-    private void renderNormal(ViewGroup dayView, boolean containData) {
-        dayView.setBackgroundResource(android.R.color.transparent);
-        if (containData) {
+    private void renderNormal(ViewGroup dayView, String date) {
+        dayView.findViewById(R.id.cal_container).setBackgroundResource(android.R.color.transparent);
+        if (CalendarPresenter.instance().containData(date)) {
             ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point);
             dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);
         } else {

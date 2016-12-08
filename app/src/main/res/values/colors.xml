@@ -11,4 +11,5 @@
     <color name="common_bg">#EBEBEB</color>
     <color name="gray_pressed">#666667</color>
     <color name="news_time_color">#9a9a9a</color>
+    <color name="calendar_gray_bg">#34393a</color>
 </resources>
