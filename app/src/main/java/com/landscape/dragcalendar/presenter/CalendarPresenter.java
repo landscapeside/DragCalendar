@@ -79,11 +79,12 @@ public class CalendarPresenter {
         this.calendarDotVO = calendarDotVO;
     }
 
-    public void parseData(List<Object> sources) {
+    public <T> void parseData(List<T> sources) {
         if (calendarDotVO == null) {
             throw new IllegalArgumentException("Dot Data must not be null");
         }
         calendarDotVO.parseData(sources);
+        viewPackage().dragCalendarLayout.focusCalendar();
     }
 
     public CalendarDotVO getCalendarDotVO() {

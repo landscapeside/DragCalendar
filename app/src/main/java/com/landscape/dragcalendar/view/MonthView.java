@@ -39,7 +39,7 @@ public class MonthView extends LinearLayout implements ICalendarView {
 
         adapter = new MonthCalendarAdapter(context);
         monthPager.setAdapter(adapter);
-        monthPager.setCurrentItem(1200, true);
+        monthPager.setCurrentItem(adapter.getCount()/2, true);
     }
 
     @Override
@@ -53,7 +53,9 @@ public class MonthView extends LinearLayout implements ICalendarView {
             monthPager.setCurrentItem(monthPager.getCurrentItem() - 1);
         } else if (pageMonth < calendar.get(Calendar.MONTH)) {
             //下个月
-            monthPager.setCurrentItem(monthPager.getCurrentItem() + 1);
+            if (monthPager.getCurrentItem() < adapter.getCount() - 1) {
+                monthPager.setCurrentItem(monthPager.getCurrentItem() + 1);
+            }
         }
         adapter.notifyDataSetChanged();
     }

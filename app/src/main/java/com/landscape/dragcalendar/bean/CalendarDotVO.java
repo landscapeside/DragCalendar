@@ -36,7 +36,9 @@ public abstract class CalendarDotVO<T> {
     public void parseData(List<T> sources) {
         for (T t : sources) {
             CalendarDotItem dotItem = parseVO(t);
-            dots.put(dotItem.getDate(), dotItem);
+            if (dotItem != null) {
+                dots.put(dotItem.getDate(), dotItem);
+            }
         }
     }
 

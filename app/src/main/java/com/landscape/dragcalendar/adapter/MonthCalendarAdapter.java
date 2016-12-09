@@ -78,7 +78,7 @@ public class MonthCalendarAdapter extends CalendarBaseAdapter {
         Calendar today = new GregorianCalendar();
         today.setTimeInMillis(System.currentTimeMillis());
         //距离当前时间的月数
-        int month = 1200 - position;
+        int month = getCount() / 2 - position;
         today.add(Calendar.MONTH, -month);
         view.setTag(today.get(Calendar.MONTH) + "");
         //找到这个月的第一天所在星期的周日

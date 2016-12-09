@@ -5,12 +5,14 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
     defaultConfig {
-        applicationId "com.landscape.dragcalendar"
+        if (!isLibModule.toBoolean()) {
+            applicationId "com.landscape.dragcalendar"
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        }
         minSdkVersion 11
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
