@@ -7,10 +7,14 @@
     android:layout_height="match_parent"
     tools:context="com.landscape.dragcalendar.simple.MainActivity">
 
+    <!-- 日历的隐藏信息栏，被toolbar遮挡，通过移动toolbar显现 -->
+
     <com.landscape.dragcalendar.CalendarBar
         android:id="@+id/cal_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <!-- toolbar -->
 
     <include
         android:id="@+id/actionbar"
@@ -27,6 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:calendar_content="@+id/scroll_test">
+
+            <!-- 内容区，支持listview,scrollview,recyclerView -->
 
             <ScrollView
                 android:id="@+id/scroll_test"
