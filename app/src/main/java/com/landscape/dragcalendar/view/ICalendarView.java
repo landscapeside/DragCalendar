@@ -5,5 +5,7 @@ package com.landscape.dragcalendar.view;
  */
 
 public interface ICalendarView {
+    void backToday();
+    int currentIdx();
     void focusCalendar();
 }

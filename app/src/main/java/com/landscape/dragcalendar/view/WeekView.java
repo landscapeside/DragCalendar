@@ -2,12 +2,14 @@ package com.landscape.dragcalendar.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.landscape.dragcalendar.R;
 import com.landscape.dragcalendar.adapter.WeekCalendarAdapter;
+import com.landscape.dragcalendar.presenter.CalendarPresenter;
 
 import static com.landscape.dragcalendar.utils.MotionEventUtil.dp2px;
 import static com.landscape.dragcalendar.constant.Range.WEEK_HEIGHT;
@@ -34,11 +36,22 @@ public class WeekView extends LinearLayout implements ICalendarView {
 
         adapter = new WeekCalendarAdapter(context);
         weekPager.setAdapter(adapter);
-        weekPager.setCurrentItem(adapter.getCount() / 2);
+        weekPager.setCurrentItem(adapter.getCount() / 2,true);
+    }
+
+    @Override
+    public void backToday() {
+        weekPager.setCurrentItem(adapter.getCount() / 2,true);
+    }
+
+    @Override
+    public int currentIdx() {
+        return weekPager.getCurrentItem();
     }
 
     @Override
     public void focusCalendar() {
+        weekPager.setCurrentItem(adapter.getCount() / 2 - CalendarPresenter.instance().getWeekDiff(),true);
         adapter.notifyDataSetChanged();
     }
 }

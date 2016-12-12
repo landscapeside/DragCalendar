@@ -228,7 +228,7 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
                     if (dragListener != null) {
                         dragListener.onExpand();
                     }
-                    monthView.setVisibility(VISIBLE);
+                    // 直接遮挡即可
                     weekView.setVisibility(GONE);
                 }
             } else {
@@ -241,7 +241,6 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
                     }
                     status = ScrollStatus.WEEK;
                     scrollStatus = status;
-                    monthView.setVisibility(GONE);
                     weekView.setVisibility(VISIBLE);
                 }
             }
@@ -259,10 +258,8 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
             ViewCompat.postInvalidateOnAnimation(this);
         } else if (!animContinue && lastAnimState != animContinue) {
             if (ScrollStatus.isMonth(scrollStatus)) {
-                monthView.setVisibility(VISIBLE);
                 weekView.setVisibility(GONE);
             } else if (ScrollStatus.isWeek(scrollStatus)) {
-                monthView.setVisibility(GONE);
                 weekView.setVisibility(VISIBLE);
             } else if (ScrollStatus.isIdle(scrollStatus)) {
 
@@ -326,6 +323,17 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
 
     public void setCalendarDragListener(CalendarDragListener calendarDragListener) {
         dragListener = calendarDragListener;
+    }
+
+    @Override
+    public void backToday() {
+        monthView.backToday();
+        weekView.backToday();
+    }
+
+    @Override
+    public int currentIdx() {
+        return 0;
     }
 
     @Override

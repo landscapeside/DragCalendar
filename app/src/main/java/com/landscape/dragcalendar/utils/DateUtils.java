@@ -92,7 +92,7 @@ public class DateUtils {
         Date date2 = stringToDate(dateStr2);
 
         if (date1 != null && date2 != null) {
-            diff = Math.abs(date1.getTime() - date2.getTime());
+            diff = date1.getTime() - date2.getTime();
         }
 
         return diff;

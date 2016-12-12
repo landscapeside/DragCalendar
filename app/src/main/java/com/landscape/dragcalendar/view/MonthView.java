@@ -2,6 +2,7 @@ package com.landscape.dragcalendar.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -43,20 +44,18 @@ public class MonthView extends LinearLayout implements ICalendarView {
     }
 
     @Override
+    public void backToday() {
+        monthPager.setCurrentItem(adapter.getCount()/2, true);
+    }
+
+    @Override
+    public int currentIdx() {
+        return monthPager.getCurrentItem();
+    }
+
+    @Override
     public void focusCalendar() {
-        int pageMonth = (Integer.parseInt((String) adapter.currentCard().getTag()));
-        Date selectDate = DateUtils.stringToDate(CalendarPresenter.instance().getSelectTime());
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(selectDate);
-        if (pageMonth > calendar.get(Calendar.MONTH)) {
-            //上个月
-            monthPager.setCurrentItem(monthPager.getCurrentItem() - 1);
-        } else if (pageMonth < calendar.get(Calendar.MONTH)) {
-            //下个月
-            if (monthPager.getCurrentItem() < adapter.getCount() - 1) {
-                monthPager.setCurrentItem(monthPager.getCurrentItem() + 1);
-            }
-        }
+        monthPager.setCurrentItem(adapter.getCount()/2 - CalendarPresenter.instance().getMonthDiff(),true);
         adapter.notifyDataSetChanged();
     }
 

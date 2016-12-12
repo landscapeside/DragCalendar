@@ -10,6 +10,7 @@ import com.landscape.dragcalendar.view.MonthView;
 import com.landscape.dragcalendar.view.WeekView;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -107,11 +108,19 @@ public class CalendarPresenter {
                 false : ((CalendarDotVO.CalendarDotItem) calendarDotVO.getDots().get(date)).isContainData();
     }
 
+    public String getTodayTime() {
+        return todayTime;
+    }
+
     public String getSelectTime() {
         return selectTime;
     }
 
     public void setSelectTime(String selectTime) {
+        setSelectTime(selectTime, true);
+    }
+
+    public void setSelectTime(String selectTime, boolean close) {
         if (TextUtils.isEmpty(selectTime)) {
             throw new IllegalArgumentException("selectTime can not be empty");
         }
@@ -122,11 +131,65 @@ public class CalendarPresenter {
             }
         }
         viewPackage().dragCalendarLayout.focusCalendar();
-        close();
+        if (close) {
+            close();
+        }
+    }
+
+    /**
+     * today - select (unit base on month)
+     *
+     * @return
+     */
+    public int getMonthDiff() {
+        Date selectDate = DateUtils.stringToDate(selectTime);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectDate);
+
+        Date todayDate = DateUtils.stringToDate(todayTime);
+        Calendar calToday = Calendar.getInstance();
+        calToday.setTime(todayDate);
+
+        int yearDiff = calToday.get(Calendar.YEAR) - calendar.get(Calendar.YEAR);
+        int monthDiff = calToday.get(Calendar.MONTH) - calendar.get(Calendar.MONTH);
+        monthDiff += 12 * yearDiff;
+        return monthDiff;
+    }
+
+    /**
+     * today - select (unit base on week)
+     *
+     * @return
+     */
+    public int getWeekDiff() {
+        Date selectDate = DateUtils.stringToDate(selectTime);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectDate);
+
+        Date todayDate = DateUtils.stringToDate(todayTime);
+        Calendar calToday = Calendar.getInstance();
+        calToday.setTime(todayDate);
+
+        // 归整
+        int day_of_week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        if (day_of_week == 0) {
+            day_of_week = 7;
+        }
+        calendar.add(Calendar.DATE, -day_of_week);
+
+        day_of_week = calToday.get(Calendar.DAY_OF_WEEK) - 1;
+        if (day_of_week == 0) {
+            day_of_week = 7;
+        }
+        calToday.add(Calendar.DATE, -day_of_week);
+
+        long weekDiff = DateUtils.diff(DateUtils.getTagTimeStr(calToday), DateUtils.getTagTimeStr(calendar))/1000/3600/24/7;
+        return (int) weekDiff;
     }
 
     public void backToday() {
-        setSelectTime(todayTime);
+        viewPackage().dragCalendarLayout.backToday();
+        setSelectTime(todayTime, false);
     }
 
     public void close() {
