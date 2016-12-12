@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:textColor="@color/white"
         tools:text="2016年12月"/>
 
     <ImageView
@@ -21,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/icon_close"/>
+        android:src="@drawable/icon_drag_fold"/>
 
     <ImageView
         android:id="@+id/tv_back_today"

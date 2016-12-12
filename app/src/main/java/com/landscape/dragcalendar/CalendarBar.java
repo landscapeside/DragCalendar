@@ -43,9 +43,7 @@ public class CalendarBar extends FrameLayout {
         backToday.setOnClickListener(clickListener);
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
+    public void initHeight() {
         post(() -> {
             int height;
             if (getContext() instanceof AppCompatActivity) {

@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setNavigationIcon(R.mipmap.ic_back);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         calendarBar = (CalendarBar) findViewById(R.id.cal_bar);
+        calendarBar.initHeight();
         dragCalendarLayout = (DragCalendarLayout) findViewById(R.id.drag_layout);
         appBarLayout = (AppBarLayout) toolbar.getParent();
         initCalBar();
