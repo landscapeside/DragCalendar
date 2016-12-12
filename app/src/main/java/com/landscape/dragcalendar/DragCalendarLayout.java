@@ -17,6 +17,9 @@ import com.landscape.dragcalendar.view.ICalendarView;
 import com.landscape.dragcalendar.view.MonthView;
 import com.landscape.dragcalendar.view.WeekView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.landscape.dragcalendar.constant.Range.MONTH_HEIGHT;
 import static com.landscape.dragcalendar.constant.Range.WEEK_HEIGHT;
 import static com.landscape.dragcalendar.utils.MotionEventUtil.dp2px;
@@ -31,6 +34,7 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     private int contentId = 0;
     DragDelegate dragDelegate = null;
     View mContent = null;
+    List<View> childViews = new ArrayList<>();
     MonthView monthView;
     WeekView weekView;
     ViewGroup calendarTitle;
@@ -96,8 +100,12 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     protected void onFinishInflate() {
         super.onFinishInflate();
         inflateViews();
-        ensureTarget();
         initPresenter();
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            childViews.add(getChildAt(i));
+        }
+        ensureTarget();
     }
 
     private void initPresenter() {
@@ -139,6 +147,19 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
             mContent = findViewById(contentId);
             mContent.setClickable(true);
         }
+    }
+
+    public void resetContent(int contentId) {
+        this.contentId = contentId;
+        for (View view : childViews) {
+            if (view.getId() == contentId) {
+                removeView(view);
+                addView(view);
+                break;
+            }
+        }
+        ensureTarget();
+        layout();
     }
 
     ViewDragHelper.Callback dragHelperCallback = new ViewDragHelper.Callback() {
