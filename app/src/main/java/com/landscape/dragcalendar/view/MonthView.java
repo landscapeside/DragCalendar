@@ -15,6 +15,7 @@ import com.landscape.dragcalendar.utils.DateUtils;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import static com.landscape.dragcalendar.utils.MotionEventUtil.dp2px;
 import static com.landscape.dragcalendar.constant.Range.MONTH_HEIGHT;
@@ -41,6 +42,27 @@ public class MonthView extends LinearLayout implements ICalendarView {
         adapter = new MonthCalendarAdapter(context);
         monthPager.setAdapter(adapter);
         monthPager.setCurrentItem(adapter.getCount()/2, true);
+        monthPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Calendar today = new GregorianCalendar();
+                today.setTimeInMillis(System.currentTimeMillis());
+                //距离当前时间的月数
+                int month = adapter.getCount() / 2 - position;
+                today.add(Calendar.MONTH, -month);
+                CalendarPresenter.instance().setCurrentScrollDate(DateUtils.getTagTimeStrByYearandMonth(today));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override

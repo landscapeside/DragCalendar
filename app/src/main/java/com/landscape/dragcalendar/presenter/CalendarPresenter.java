@@ -21,7 +21,7 @@ import java.util.List;
 public class CalendarPresenter {
     private static CalendarPresenter instance;
     private ViewPackage viewPackage;
-    private String selectTime, todayTime;
+    private String selectTime, todayTime,currentDate;
     private CalendarDotVO calendarDotVO = null;
 
     public class ViewPackage {
@@ -71,6 +71,7 @@ public class CalendarPresenter {
         today.setTimeInMillis(System.currentTimeMillis());
         selectTime = DateUtils.getTagTimeStr(today);
         todayTime = selectTime;
+        currentDate = DateUtils.getTagTimeStrByYearandMonth(today);
     }
 
     public void loadCalendarDotVO(CalendarDotVO calendarDotVO) {
@@ -127,12 +128,34 @@ public class CalendarPresenter {
         if (!this.selectTime.equals(selectTime)) {
             this.selectTime = selectTime;
             if (callbk != null) {
-                callbk.onSelect(selectTime, selectTime.equals(todayTime));
+                callbk.onSelect(selectTime);
             }
+            currentDateCallbk();
         }
         viewPackage().dragCalendarLayout.focusCalendar();
         if (close) {
             close();
+        }
+    }
+
+    public void setCurrentScrollDate(String currentScrollDate) {
+        if (TextUtils.isEmpty(currentScrollDate)) {
+            throw new IllegalArgumentException("currentScrollDate can not be empty");
+        }
+        if (!currentDate.equals(currentScrollDate)) {
+            currentDate = currentScrollDate;
+            currentDateCallbk();
+        }
+    }
+
+    private void currentDateCallbk() {
+        if (callbk != null) {
+            Date today = DateUtils.stringToDate(todayTime);
+            Calendar todayCal = new GregorianCalendar();
+            todayCal.setTime(today);
+            boolean isToday = currentDate.equals(DateUtils.getTagTimeStrByYearandMonth(todayCal));
+            isToday = isToday && selectTime.equals(todayTime);
+            callbk.onScroll(currentDate,isToday);
         }
     }
 
@@ -197,15 +220,14 @@ public class CalendarPresenter {
     }
 
     public interface ICallbk {
-        void onSelect(String selectTime, boolean isToday);
+        void onScroll(String currentTime, boolean isToday);
+        void onSelect(String selectTime);
     }
 
     ICallbk callbk = null;
 
     public void setCallbk(ICallbk callbk) {
         this.callbk = callbk;
-        if (callbk != null) {
-            callbk.onSelect(selectTime, selectTime.equals(todayTime));
-        }
+        currentDateCallbk();
     }
 }

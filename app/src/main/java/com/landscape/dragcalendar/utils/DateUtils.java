@@ -84,6 +84,17 @@ public class DateUtils {
     }
 
     /**
+     * 得到calendar的日期：xxxx年xx月
+     */
+    public static String getTagTimeStrByYearandMonth(Calendar calendar) {
+        String ss = "";
+        if (calendar != null) {
+            ss = DateUtils.longToStr(calendar.getTimeInMillis(), "yyyy年MM月");
+        }
+        return ss;
+    }
+
+    /**
      * 取得两个时间相差的毫秒数
      */
     public static long diff(String dateStr1, String dateStr2) {
