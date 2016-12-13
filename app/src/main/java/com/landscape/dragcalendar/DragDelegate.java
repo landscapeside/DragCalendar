@@ -118,7 +118,7 @@ public class DragDelegate {
     private boolean handleMotionEvent(MotionEvent event) {
         if (!ScrollStatus.isDragging(consignor.scrollStatus())) {
             MotionEvent cancelEvent = MotionEvent.obtain(event);
-            cancelEvent.setAction(MotionEvent.ACTION_UP);
+            cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
             consignor.target().dispatchTouchEvent(cancelEvent);
         }
         return gestureDetector.onTouchEvent(event) && consignor.dragHelper().shouldInterceptTouchEvent(event);

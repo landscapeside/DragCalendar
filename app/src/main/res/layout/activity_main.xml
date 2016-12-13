@@ -30,24 +30,30 @@
             android:id="@+id/drag_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:calendar_content="@+id/scroll_test">
+            app:calendar_content="@+id/list_test">
 
             <!-- 内容区，支持listview,scrollview,recyclerView -->
 
-            <ScrollView
-                android:id="@+id/scroll_test"
+            <!--<ScrollView-->
+                <!--android:id="@+id/scroll_test"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:fillViewport="true">-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_content"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:text="adfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\n"-->
+                    <!--android:background="@color/red"/>-->
+
+            <!--</ScrollView>-->
+
+            <ListView
+                android:id="@+id/list_test"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fillViewport="true">
-
-                <TextView
-                    android:id="@+id/tv_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="adfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\nadfasdfasdfasdfasdfsa\n"
-                    android:background="@color/red"/>
-
-            </ScrollView>
+                android:background="@color/calendar_gray_bg"/>
 
         </com.landscape.dragcalendar.DragCalendarLayout>
 

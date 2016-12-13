@@ -5,12 +5,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import com.joanzapata.android.BaseAdapterHelper;
+import com.joanzapata.android.QuickAdapter;
 import com.landscape.dragcalendar.CalendarBar;
 import com.landscape.dragcalendar.DragCalendarLayout;
 import com.landscape.dragcalendar.R;
 import com.landscape.dragcalendar.presenter.CalendarPresenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -18,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
     DragCalendarLayout dragCalendarLayout;
     CalendarPresenter presenter;
     AppBarLayout appBarLayout;
+
+    ListView listTest;
+    QuickAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +44,16 @@ public class MainActivity extends AppCompatActivity {
         appBarLayout = (AppBarLayout) toolbar.getParent();
         initCalBar();
         setToolBarAnim();
+
+        listTest = (ListView) findViewById(R.id.list_test);
+        adapter = new QuickAdapter<String>(this,R.layout.item_test,mockData()) {
+            @Override
+            protected void convert(BaseAdapterHelper helper, String item) {
+                helper.setText(R.id.tv_name, item);
+            }
+        };
+        listTest.setAdapter(adapter);
+        listTest.setOnItemClickListener((parent, view, position, id) -> Toast.makeText(MainActivity.this, "you click test" + (position + 1), Toast.LENGTH_SHORT).show());
     }
 
     private void setToolBarAnim() {
@@ -55,5 +75,13 @@ public class MainActivity extends AppCompatActivity {
             calendarBar.setDate(selectTime,isToday);
             Toast.makeText(this, selectTime, Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private List<String> mockData() {
+        List<String> data = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            data.add("test" + i);
+        }
+        return data;
     }
 }
