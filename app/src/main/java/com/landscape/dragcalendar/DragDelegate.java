@@ -3,6 +3,7 @@ package com.landscape.dragcalendar;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.ViewDragHelper;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +38,7 @@ public class DragDelegate {
                 mActivePointerId = MotionEventCompat.getPointerId(event, 0);
                 initY = (int) MotionEventUtil.getMotionEventY(event, mActivePointerId);
                 lastY = initY;
+                gestureDetector.onTouchEvent(event);
                 consignor.dragHelper().shouldInterceptTouchEvent(event);
                 consignor.beforeMove();
                 break;
@@ -121,7 +123,9 @@ public class DragDelegate {
             cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
             consignor.target().dispatchTouchEvent(cancelEvent);
         }
-        return gestureDetector.onTouchEvent(event) && consignor.dragHelper().shouldInterceptTouchEvent(event);
+        boolean gestureDetectorMove = gestureDetector.onTouchEvent(event);
+        boolean dragHelperShouldIntercept = consignor.dragHelper().shouldInterceptTouchEvent(event);
+        return gestureDetectorMove && dragHelperShouldIntercept;
     }
 
     class YScrollDetector extends GestureDetector.SimpleOnGestureListener {

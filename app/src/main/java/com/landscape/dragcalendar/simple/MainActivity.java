@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
     CalendarPresenter presenter;
     AppBarLayout appBarLayout;
 
-    ListView listTest;
-    QuickAdapter adapter;
+//    ListView listTest;
+//    QuickAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +45,15 @@ public class MainActivity extends AppCompatActivity {
         initCalBar();
         setToolBarAnim();
 
-        listTest = (ListView) findViewById(R.id.list_test);
-        adapter = new QuickAdapter<String>(this,R.layout.item_test,mockData()) {
-            @Override
-            protected void convert(BaseAdapterHelper helper, String item) {
-                helper.setText(R.id.tv_name, item);
-            }
-        };
-        listTest.setAdapter(adapter);
-        listTest.setOnItemClickListener((parent, view, position, id) -> Toast.makeText(MainActivity.this, "you click test" + (position + 1), Toast.LENGTH_SHORT).show());
+//        listTest = (ListView) findViewById(R.id.list_test);
+//        adapter = new QuickAdapter<String>(this,R.layout.item_test,mockData()) {
+//            @Override
+//            protected void convert(BaseAdapterHelper helper, String item) {
+//                helper.setText(R.id.tv_name, item);
+//            }
+//        };
+//        listTest.setAdapter(adapter);
+//        listTest.setOnItemClickListener((parent, view, position, id) -> Toast.makeText(MainActivity.this, "you click test" + (position + 1), Toast.LENGTH_SHORT).show());
     }
 
     private void setToolBarAnim() {
