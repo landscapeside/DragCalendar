@@ -94,6 +94,13 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
                 paddingTop + weekView.getMeasuredHeight() + titleHeight);
 
         calendarTitle.layout(paddingLeft, paddingTop, width - paddingRight, paddingTop + titleHeight);
+
+        // 也同步其他几个隐藏的视图的位置
+        for (View view : childViews) {
+            if (view != mContent && view != weekView && view != monthView && view != calendarTitle) {
+                view.layout(paddingLeft, contentTop, width - paddingRight, height - paddingBottom);
+            }
+        }
     }
 
     @Override
@@ -158,8 +165,10 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
                 break;
             }
         }
+        mContent.setClickable(false);
         ensureTarget();
         layout();
+        invalidate();
     }
 
     ViewDragHelper.Callback dragHelperCallback = new ViewDragHelper.Callback() {

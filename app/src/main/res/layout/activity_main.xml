@@ -34,6 +34,19 @@
 
             <!-- 内容区，支持listview,scrollview,recyclerView -->
 
+            <RelativeLayout
+                android:id="@+id/empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimaryDark">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="这是空白页面!"/>
+            </RelativeLayout>
+
             <ScrollView
                 android:id="@+id/scroll_test"
                 android:layout_width="match_parent"

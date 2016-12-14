@@ -45,6 +45,16 @@ public class MainActivity extends AppCompatActivity {
         initCalBar();
         setToolBarAnim();
 
+        dragCalendarLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.scroll_test).setVisibility(View.GONE);
+                findViewById(R.id.empty_view).setVisibility(View.VISIBLE);
+                dragCalendarLayout.resetContent(R.id.empty_view);
+            }
+        }, 500);
+
+
 //        listTest = (ListView) findViewById(R.id.list_test);
 //        adapter = new QuickAdapter<String>(this,R.layout.item_test,mockData()) {
 //            @Override
