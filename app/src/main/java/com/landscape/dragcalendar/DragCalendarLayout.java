@@ -3,8 +3,9 @@ package com.landscape.dragcalendar;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.ViewDragHelper;
+//import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,6 @@ import static com.landscape.dragcalendar.utils.MotionEventUtil.dp2px;
  */
 
 public class DragCalendarLayout extends FrameLayout implements DragDelegate.DragActionBridge, ICalendarView {
-    CalendarPresenter presenter;
     ViewDragHelper dragHelper;
     private int contentId = 0;
     DragDelegate dragDelegate = null;
@@ -43,7 +43,7 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     private float mDragPercent;
 
     CalendarDragListener dragListener;
-    ScrollStatus status = ScrollStatus.IDLE, scrollStatus = ScrollStatus.IDLE;
+    ScrollStatus status = ScrollStatus.IDLE, scrollStatus = ScrollStatus.WEEK;
 
     public DragCalendarLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -116,10 +116,9 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     }
 
     private void initPresenter() {
-        presenter = CalendarPresenter.instance();
-        presenter.registerDragCalendarLayout(this);
-        presenter.registerMonthView(monthView);
-        presenter.registerWeekView(weekView);
+        CalendarPresenter.instance().registerDragCalendarLayout(this);
+        CalendarPresenter.instance().registerMonthView(monthView);
+        CalendarPresenter.instance().registerWeekView(weekView);
     }
 
     public void connectBar(CalendarBar calendarBar) {
@@ -194,10 +193,13 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             super.onViewReleased(releasedChild, xvel, yvel);
+            Log.i("dragHelperCallback", "onViewReleased");
             if (dragDelegate.getDirection() == Direction.DOWN) {
                 setExpand(true);
             } else if (dragDelegate.getDirection() == Direction.UP) {
                 setExpand(false);
+            } else {
+                Log.i("dragHelperCallback", "other");
             }
         }
 
@@ -225,6 +227,8 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     }
 
     public void setExpand(boolean expand, boolean anim) {
+        Log.i("setExpand", "expand:" + expand);
+        dragHelper.abort();
         if (anim) {
             lastAnimState = true;
             if (expand) {
@@ -264,8 +268,10 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     public void computeScroll() {
         animContinue = dragHelper.continueSettling(true);
         if (animContinue && lastAnimState == animContinue) {
+            Log.i("computeScroll", "continue anim");
             ViewCompat.postInvalidateOnAnimation(this);
         } else if (!animContinue && lastAnimState != animContinue) {
+            Log.i("computeScroll", "end anim");
             if (ScrollStatus.isMonth(scrollStatus)) {
                 weekView.setVisibility(GONE);
             } else if (ScrollStatus.isWeek(scrollStatus)) {
