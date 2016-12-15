@@ -5,12 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.joanzapata.android.BaseAdapterHelper;
-import com.joanzapata.android.QuickAdapter;
 import com.landscape.dragcalendar.CalendarBar;
 import com.landscape.dragcalendar.DragCalendarLayout;
 import com.landscape.dragcalendar.R;
@@ -100,5 +96,11 @@ public class MainActivity extends AppCompatActivity {
             data.add("test" + i);
         }
         return data;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        CalendarPresenter.instance().destroy();
     }
 }
