@@ -74,6 +74,10 @@ public class CalendarPresenter {
         currentDate = DateUtils.getTagTimeStrByYearandMonth(today);
     }
 
+    public void destroy() {
+        instance = null;
+    }
+
     public void loadCalendarDotVO(CalendarDotVO calendarDotVO) {
         if (calendarDotVO == null) {
             throw new IllegalArgumentException("Dot Data must not be null");
@@ -211,8 +215,8 @@ public class CalendarPresenter {
     }
 
     public void backToday() {
-        viewPackage().dragCalendarLayout.backToday();
         setSelectTime(todayTime, false);
+        viewPackage().dragCalendarLayout.backToday();
     }
 
     public void close() {

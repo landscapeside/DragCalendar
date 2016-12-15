@@ -2,7 +2,7 @@ package com.landscape.dragcalendar;
 
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
-import android.support.v4.widget.ViewDragHelper;
+//import android.support.v4.widget.ViewDragHelper;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
