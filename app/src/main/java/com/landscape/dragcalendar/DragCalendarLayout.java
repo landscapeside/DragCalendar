@@ -193,18 +193,16 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             super.onViewReleased(releasedChild, xvel, yvel);
-            Log.i("dragHelperCallback", "onViewReleased");
             if (dragDelegate.getDirection() == Direction.DOWN) {
                 setExpand(true);
             } else if (dragDelegate.getDirection() == Direction.UP) {
                 setExpand(false);
-            } else {
-                Log.i("dragHelperCallback", "other");
             }
         }
 
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
+            status = ScrollStatus.DRAGGING;
             if (contentTop + dy > getPaddingTop() + dp2px(getContext(), MONTH_HEIGHT) + titleHeight) {
                 contentTop = getPaddingTop() + titleHeight + dp2px(getContext(), MONTH_HEIGHT);
             } else if ((contentTop + dy) < getPaddingTop() + titleHeight + dp2px(getContext(), WEEK_HEIGHT)) {
@@ -227,7 +225,6 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     }
 
     public void setExpand(boolean expand, boolean anim) {
-        Log.i("setExpand", "expand:" + expand);
         dragHelper.abort();
         if (anim) {
             lastAnimState = true;
@@ -268,10 +265,8 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     public void computeScroll() {
         animContinue = dragHelper.continueSettling(true);
         if (animContinue && lastAnimState == animContinue) {
-            Log.i("computeScroll", "continue anim");
             ViewCompat.postInvalidateOnAnimation(this);
         } else if (!animContinue && lastAnimState != animContinue) {
-            Log.i("computeScroll", "end anim");
             if (ScrollStatus.isMonth(scrollStatus)) {
                 weekView.setVisibility(GONE);
             } else if (ScrollStatus.isWeek(scrollStatus)) {
