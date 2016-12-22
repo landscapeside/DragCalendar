@@ -2,7 +2,7 @@ DragCanlendar---仿小米日历
 ----
 
 
-![交互图.gif](http://upload-images.jianshu.io/upload_images/1830024-5ee56049a6a3571d.gif?imageMogr2/auto-orient/strip)
+![交互图.gif](showcase.gif)
 
 ####Usage
 
