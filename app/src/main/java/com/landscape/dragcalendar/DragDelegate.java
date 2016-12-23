@@ -2,7 +2,7 @@ package com.landscape.dragcalendar;
 
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
-//import android.support.v4.widget.ViewDragHelper;
+import android.support.v4.widget.ViewDragHelper;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -34,6 +34,11 @@ public class DragDelegate {
         }
         final int action = MotionEventCompat.getActionMasked(event);
         switch (action) {
+            case MotionEvent.ACTION_POINTER_DOWN:
+            case MotionEvent.ACTION_POINTER_UP:
+                gestureDetector.onTouchEvent(event);
+                consignor.dragHelper().shouldInterceptTouchEvent(event);
+                break;
             case MotionEvent.ACTION_DOWN:
                 mActivePointerId = MotionEventCompat.getPointerId(event, 0);
                 initY = (int) MotionEventUtil.getMotionEventY(event, mActivePointerId);
