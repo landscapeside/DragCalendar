@@ -199,15 +199,9 @@ public class CalendarPresenter {
 
         // 归整
         int day_of_week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        if (day_of_week == 0) {
-            day_of_week = 7;
-        }
         calendar.add(Calendar.DATE, -day_of_week);
 
         day_of_week = calToday.get(Calendar.DAY_OF_WEEK) - 1;
-        if (day_of_week == 0) {
-            day_of_week = 7;
-        }
         calToday.add(Calendar.DATE, -day_of_week);
 
         long weekDiff = DateUtils.diff(DateUtils.getTagTimeStr(calToday), DateUtils.getTagTimeStr(calendar))/1000/3600/24/7;
