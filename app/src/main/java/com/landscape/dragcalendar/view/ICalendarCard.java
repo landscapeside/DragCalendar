@@ -1,7 +1,5 @@
 package com.landscape.dragcalendar.view;
 
-import android.view.ViewGroup;
-
 import java.util.Calendar;
 
 /**

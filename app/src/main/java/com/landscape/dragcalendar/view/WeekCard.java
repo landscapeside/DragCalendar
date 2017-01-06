@@ -12,7 +12,6 @@ import com.landscape.dragcalendar.presenter.CalendarPresenter;
 import com.landscape.dragcalendar.utils.DateUtils;
 
 import java.util.Calendar;
-import java.util.Map;
 
 /**
  * Created by landscape on 2016/11/30.
@@ -43,7 +42,11 @@ public class WeekCard extends LinearLayout implements ICalendarCard {
                 renderSelect(dayOfWeek, DateUtils.getTagTimeStr(today));
             } else {
                 ((TextView) dayOfWeek.findViewById(R.id.gongli)).setText(dayOfMonth + "");
-                renderNormal(dayOfWeek, DateUtils.getTagTimeStr(today));
+                if (DateUtils.diff(CalendarPresenter.instance().today(), DateUtils.getTagTimeStr(today)) >= 0) {
+                    renderNormal(dayOfWeek, DateUtils.getTagTimeStr(today));
+                } else {
+                    renderGray(dayOfWeek, DateUtils.getTagTimeStr(today));
+                }
             }
             today.add(Calendar.DATE, 1);
         }
@@ -51,6 +54,7 @@ public class WeekCard extends LinearLayout implements ICalendarCard {
 
     private void renderSelect(ViewGroup dayView, String date) {
         dayView.findViewById(R.id.cal_container).setBackgroundResource(R.drawable.corner_shape_blue);
+        ((TextView) dayView.findViewById(R.id.gongli)).setTextColor(getResources().getColor(R.color.white));
         if (CalendarPresenter.instance().containData(date)) {
             ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point_select);
             dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);
@@ -61,6 +65,18 @@ public class WeekCard extends LinearLayout implements ICalendarCard {
 
     private void renderNormal(ViewGroup dayView, String date) {
         dayView.findViewById(R.id.cal_container).setBackgroundResource(android.R.color.transparent);
+        ((TextView) dayView.findViewById(R.id.gongli)).setTextColor(getResources().getColor(R.color.white));
+        if (CalendarPresenter.instance().containData(date)) {
+            ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point);
+            dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);
+        } else {
+            dayView.findViewById(R.id.imv_point).setVisibility(INVISIBLE);
+        }
+    }
+
+    private void renderGray(ViewGroup dayView, String date) {
+        dayView.findViewById(R.id.cal_container).setBackgroundResource(android.R.color.transparent);
+        ((TextView) dayView.findViewById(R.id.gongli)).setTextColor(getResources().getColor(R.color.text_color_gray));
         if (CalendarPresenter.instance().containData(date)) {
             ((ImageView) dayView.findViewById(R.id.imv_point)).setImageResource(R.drawable.calendar_item_point);
             dayView.findViewById(R.id.imv_point).setVisibility(VISIBLE);

@@ -4,12 +4,10 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.landscape.dragcalendar.view.ICalendarCard;
+import com.landscape.dragcalendar.conf.CalendarType;
 import com.landscape.dragcalendar.view.WeekCard;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -28,7 +26,7 @@ public class WeekCalendarAdapter extends CalendarBaseAdapter {
 
     @Override
     public int getCount() {
-        return 9600;
+        return CalendarType.WEEK.getCount();
     }
 
     @Override
@@ -62,28 +60,7 @@ public class WeekCalendarAdapter extends CalendarBaseAdapter {
         } catch (Exception e) {
 
         }
-        refresh(view, position);
+        CalendarType.WEEK.refresh(view, position);
         return view;
-    }
-
-    /**
-     * 提供对外的刷新接口
-     */
-    public void refresh(ViewGroup view, int position) {
-        //给view 填充内容
-
-        //设置开始时间为本周日
-        Calendar today = new GregorianCalendar();
-        today.setTimeInMillis(System.currentTimeMillis());
-        int day_of_week = today.get(Calendar.DAY_OF_WEEK) - 1;
-        if (day_of_week == 0) {
-            day_of_week = 7;
-        }
-        today.add(Calendar.DATE, -day_of_week);
-        //距离当前时间的周数
-        int week = getCount() / 2 - position;
-        today.add(Calendar.DATE, -week * 7);
-        ((ICalendarCard)view).render(today);
-
     }
 }

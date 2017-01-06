@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +42,13 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     private float mDragPercent;
 
     CalendarDragListener dragListener;
-    ScrollStatus status = ScrollStatus.IDLE, scrollStatus = ScrollStatus.WEEK;
+    ScrollStatus status = ScrollStatus.IDLE, scrollStatus = ScrollStatus.IDLE;
+
+    public DragCalendarLayout(Context context) {
+        super(context);
+        dragHelper = ViewDragHelper.create(this, dragHelperCallback);
+        dragDelegate = new DragDelegate(this);
+    }
 
     public DragCalendarLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -164,10 +169,8 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
                 break;
             }
         }
-        mContent.setClickable(false);
         ensureTarget();
         layout();
-        invalidate();
     }
 
     ViewDragHelper.Callback dragHelperCallback = new ViewDragHelper.Callback() {
@@ -238,7 +241,6 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
                     if (dragListener != null) {
                         dragListener.onExpand();
                     }
-                    // 直接遮挡即可
                     weekView.setVisibility(GONE);
                 }
             } else {
@@ -350,6 +352,12 @@ public class DragCalendarLayout extends FrameLayout implements DragDelegate.Drag
     public void focusCalendar() {
         monthView.focusCalendar();
         weekView.focusCalendar();
+    }
+
+    @Override
+    public void reDraw() {
+        monthView.reDraw();
+        weekView.reDraw();
     }
 
     public interface IPercentListener {

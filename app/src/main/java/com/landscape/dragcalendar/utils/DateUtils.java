@@ -86,10 +86,11 @@ public class DateUtils {
     /**
      * 得到calendar的日期：xxxx年xx月
      */
-    public static String getTagTimeStrByYearandMonth(Calendar calendar) {
+    public static String getTagTimeStrByYearandMonth(String dateStr) {
         String ss = "";
-        if (calendar != null) {
-            ss = DateUtils.longToStr(calendar.getTimeInMillis(), "yyyy年MM月");
+        if (!TextUtils.isEmpty(dateStr)) {
+            Date date = stringToDate(dateStr);
+            ss = longToStr(date.getTime(), "yyyy年MM月");
         }
         return ss;
     }
@@ -123,6 +124,47 @@ public class DateUtils {
         return diff;
     }
 
+    /**
+     * 取得dateStr1与dateStr2之间的月差
+     *
+     * @param dateStr1
+     * @param dateStr2
+     * @return
+     */
+    public static int diffMonth(String dateStr1,String dateStr2) {
+        Calendar calendar1 = getCalendar(dateStr1);
+
+        Calendar calendar2 = getCalendar(dateStr2);
+
+        int yearDiff = calendar1.get(Calendar.YEAR) - calendar2.get(Calendar.YEAR);
+        int monthDiff = calendar1.get(Calendar.MONTH) - calendar2.get(Calendar.MONTH);
+        monthDiff += 12 * yearDiff;
+        return monthDiff;
+    }
+
+    /**
+     * 取得周差(dateStr1 - dateStr2)
+     *
+     * @param dateStr1
+     * @param dateStr2
+     * @return
+     */
+    public static int diffWeek(String dateStr1,String dateStr2) {
+        Calendar calendar = getCalendar(dateStr2);
+
+        Calendar calToday = getCalendar(dateStr1);
+
+        // 归整
+        int day_of_week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        calendar.add(Calendar.DATE, -day_of_week);
+
+        day_of_week = calToday.get(Calendar.DAY_OF_WEEK) - 1;
+        calToday.add(Calendar.DATE, -day_of_week);
+
+        long weekDiff = diff(getTagTimeStr(calToday), getTagTimeStr(calendar))/1000/3600/24/7;
+        return (int) weekDiff;
+    }
+
     public static Date stringToDate(String dateStr) {
         if (dateStr == null) {
             return null;
@@ -150,6 +192,12 @@ public class DateUtils {
             localParseException.printStackTrace();
         }
         return localDate;
+    }
+
+    public static Calendar getCalendar(String dateStr) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(stringToDate(dateStr));
+        return calendar;
     }
 
     public static String longToStr(long time, String format) {

@@ -10,7 +10,6 @@ import com.landscape.dragcalendar.view.MonthView;
 import com.landscape.dragcalendar.view.WeekView;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -20,38 +19,38 @@ import java.util.List;
 
 public class CalendarPresenter {
     private static CalendarPresenter instance;
-    private ViewPackage viewPackage;
+    private ViewBuilder viewBuilder;
     private String selectTime, todayTime,currentDate;
     private CalendarDotVO calendarDotVO = null;
 
-    public class ViewPackage {
+    public class ViewBuilder {
         private DragCalendarLayout dragCalendarLayout;
         private MonthView monthView;
         private WeekView weekView;
         private CalendarBar calendarBar;
     }
 
-    public ViewPackage viewPackage() {
-        if (viewPackage == null) {
-            viewPackage = new ViewPackage();
+    public ViewBuilder viewBuilder() {
+        if (viewBuilder == null) {
+            viewBuilder = new ViewBuilder();
         }
-        return viewPackage;
+        return viewBuilder;
     }
 
     public void registerDragCalendarLayout(DragCalendarLayout dragCalendarLayout) {
-        viewPackage().dragCalendarLayout = dragCalendarLayout;
+        viewBuilder().dragCalendarLayout = dragCalendarLayout;
     }
 
     public void registerMonthView(MonthView monthView) {
-        viewPackage().monthView = monthView;
+        viewBuilder().monthView = monthView;
     }
 
     public void registerWeekView(WeekView weekView) {
-        viewPackage().weekView = weekView;
+        viewBuilder().weekView = weekView;
     }
 
     public void registerCalendarBar(CalendarBar calendarBar) {
-        viewPackage().calendarBar = calendarBar;
+        viewBuilder().calendarBar = calendarBar;
     }
 
     private CalendarPresenter() {
@@ -71,7 +70,15 @@ public class CalendarPresenter {
         today.setTimeInMillis(System.currentTimeMillis());
         selectTime = DateUtils.getTagTimeStr(today);
         todayTime = selectTime;
-        currentDate = DateUtils.getTagTimeStrByYearandMonth(today);
+        currentDate = DateUtils.getTagTimeStr(today);
+    }
+
+    public void mockToday(long timeMills) {
+        Calendar today = new GregorianCalendar();
+        today.setTimeInMillis(timeMills);
+        selectTime = DateUtils.getTagTimeStr(today);
+        todayTime = selectTime;
+        currentDate = DateUtils.getTagTimeStr(today);
     }
 
     public void destroy() {
@@ -90,7 +97,7 @@ public class CalendarPresenter {
             throw new IllegalArgumentException("Dot Data must not be null");
         }
         calendarDotVO.parseData(sources);
-        viewPackage().dragCalendarLayout.focusCalendar();
+        viewBuilder().dragCalendarLayout.reDraw();
     }
 
     public CalendarDotVO getCalendarDotVO() {
@@ -113,33 +120,47 @@ public class CalendarPresenter {
                 false : ((CalendarDotVO.CalendarDotItem) calendarDotVO.getDots().get(date)).isContainData();
     }
 
-    public String getTodayTime() {
+    public String today() {
         return todayTime;
+    }
+
+    public Calendar todayCalendar() {
+        return DateUtils.getCalendar(todayTime);
     }
 
     public String getSelectTime() {
         return selectTime;
     }
 
-    public void setSelectTime(String selectTime) {
-        setSelectTime(selectTime, true);
+    public Calendar selectCalendar() {
+        return DateUtils.getCalendar(selectTime);
     }
 
-    public void setSelectTime(String selectTime, boolean close) {
+    public void setSelectTime(String selectTime, boolean autoReset) {
         if (TextUtils.isEmpty(selectTime)) {
             throw new IllegalArgumentException("selectTime can not be empty");
         }
-        if (!this.selectTime.equals(selectTime)) {
-            this.selectTime = selectTime;
-            if (callbk != null) {
-                callbk.onSelect(selectTime);
+        if (DateUtils.diff(todayTime, selectTime) < 0) {
+            if (autoReset) {
+                selectTime = todayTime;
+            } else {
+                return;
             }
-            currentDateCallbk();
         }
-        viewPackage().dragCalendarLayout.focusCalendar();
+        boolean close  = false;
+        this.selectTime = selectTime;
+        if (callbk != null) {
+            close = callbk.onSelect(selectTime);
+        }
+        notifyCalendarBar(selectTime);
+        viewBuilder().dragCalendarLayout.focusCalendar();
         if (close) {
             close();
         }
+    }
+
+    public void setSelectTime(String selectTime) {
+        setSelectTime(selectTime,false);
     }
 
     public void setCurrentScrollDate(String currentScrollDate) {
@@ -149,17 +170,25 @@ public class CalendarPresenter {
         if (!currentDate.equals(currentScrollDate)) {
             currentDate = currentScrollDate;
             currentDateCallbk();
+            notifyCalendarBar(currentScrollDate);
         }
     }
 
     private void currentDateCallbk() {
         if (callbk != null) {
-            Date today = DateUtils.stringToDate(todayTime);
-            Calendar todayCal = new GregorianCalendar();
-            todayCal.setTime(today);
-            boolean isToday = currentDate.equals(DateUtils.getTagTimeStrByYearandMonth(todayCal));
-            isToday = isToday && selectTime.equals(todayTime);
-            callbk.onScroll(currentDate,isToday);
+            callbk.onScroll(currentDate);
+        }
+    }
+
+    private void notifyCalendarBar(String barDate) {
+        if (callbk != null) {
+            boolean isToday;
+            if (DateUtils.diffMonth(todayTime, barDate) == 0) {
+                isToday = todayTime.equals(selectTime);
+            } else {
+                isToday = false;
+            }
+            callbk.onCalendarBarChange(barDate,isToday);
         }
     }
 
@@ -169,18 +198,7 @@ public class CalendarPresenter {
      * @return
      */
     public int getMonthDiff() {
-        Date selectDate = DateUtils.stringToDate(selectTime);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(selectDate);
-
-        Date todayDate = DateUtils.stringToDate(todayTime);
-        Calendar calToday = Calendar.getInstance();
-        calToday.setTime(todayDate);
-
-        int yearDiff = calToday.get(Calendar.YEAR) - calendar.get(Calendar.YEAR);
-        int monthDiff = calToday.get(Calendar.MONTH) - calendar.get(Calendar.MONTH);
-        monthDiff += 12 * yearDiff;
-        return monthDiff;
+        return DateUtils.diffMonth(todayTime, selectTime);
     }
 
     /**
@@ -189,37 +207,22 @@ public class CalendarPresenter {
      * @return
      */
     public int getWeekDiff() {
-        Date selectDate = DateUtils.stringToDate(selectTime);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(selectDate);
-
-        Date todayDate = DateUtils.stringToDate(todayTime);
-        Calendar calToday = Calendar.getInstance();
-        calToday.setTime(todayDate);
-
-        // 归整
-        int day_of_week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        calendar.add(Calendar.DATE, -day_of_week);
-
-        day_of_week = calToday.get(Calendar.DAY_OF_WEEK) - 1;
-        calToday.add(Calendar.DATE, -day_of_week);
-
-        long weekDiff = DateUtils.diff(DateUtils.getTagTimeStr(calToday), DateUtils.getTagTimeStr(calendar))/1000/3600/24/7;
-        return (int) weekDiff;
+        return DateUtils.diffWeek(todayTime,selectTime);
     }
 
     public void backToday() {
-        setSelectTime(todayTime, false);
-        viewPackage().dragCalendarLayout.backToday();
+        setSelectTime(todayTime);
+        viewBuilder().dragCalendarLayout.backToday();
     }
 
     public void close() {
-        viewPackage().dragCalendarLayout.setExpand(false);
+        viewBuilder().dragCalendarLayout.setExpand(false);
     }
 
     public interface ICallbk {
-        void onScroll(String currentTime, boolean isToday);
-        void onSelect(String selectTime);
+        void onCalendarBarChange(String currentTime, boolean isToday);
+        void onScroll(String currentTime);
+        boolean onSelect(String selectTime);
     }
 
     ICallbk callbk = null;
@@ -227,5 +230,6 @@ public class CalendarPresenter {
     public void setCallbk(ICallbk callbk) {
         this.callbk = callbk;
         currentDateCallbk();
+        notifyCalendarBar(currentDate);
     }
 }

@@ -8,10 +8,12 @@ import android.widget.LinearLayout;
 
 import com.landscape.dragcalendar.R;
 import com.landscape.dragcalendar.adapter.WeekCalendarAdapter;
+import com.landscape.dragcalendar.conf.CalendarType;
+import com.landscape.dragcalendar.pagelistener.CalendarPagerChangeEnum;
 import com.landscape.dragcalendar.presenter.CalendarPresenter;
 
-import static com.landscape.dragcalendar.utils.MotionEventUtil.dp2px;
 import static com.landscape.dragcalendar.constant.Range.WEEK_HEIGHT;
+import static com.landscape.dragcalendar.utils.MotionEventUtil.dp2px;
 
 /**
  * Created by landscape on 2016/11/29.
@@ -35,12 +37,13 @@ public class WeekView extends LinearLayout implements ICalendarView {
 
         adapter = new WeekCalendarAdapter(context);
         weekPager.setAdapter(adapter);
-        weekPager.setCurrentItem(adapter.getCount() / 2,true);
+        weekPager.setCurrentItem(CalendarType.WEEK.defPosition());
+        weekPager.setOnPageChangeListener(CalendarPagerChangeEnum.WEEK.setAdapter(adapter));
     }
 
     @Override
     public void backToday() {
-        weekPager.setCurrentItem(adapter.getCount() / 2,true);
+        weekPager.setCurrentItem(CalendarType.WEEK.defPosition(), true);
     }
 
     @Override
@@ -50,7 +53,12 @@ public class WeekView extends LinearLayout implements ICalendarView {
 
     @Override
     public void focusCalendar() {
-        weekPager.setCurrentItem(adapter.getCount() / 2 - CalendarPresenter.instance().getWeekDiff(),true);
+        weekPager.setCurrentItem(CalendarType.WEEK.defPosition() - CalendarPresenter.instance().getWeekDiff(), true);
+        reDraw();
+    }
+
+    @Override
+    public void reDraw() {
         adapter.notifyDataSetChanged();
     }
 }

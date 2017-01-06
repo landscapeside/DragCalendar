@@ -78,14 +78,21 @@ public class MainActivity extends AppCompatActivity {
         calendarBar.setBackCallbk(v -> presenter.backToday());
         calendarBar.setCloseCallbk(v -> presenter.close());
         presenter.setCallbk(new CalendarPresenter.ICallbk() {
+
             @Override
-            public void onScroll(String currentTime, boolean isToday) {
+            public void onCalendarBarChange(String currentTime, boolean isToday) {
                 calendarBar.setDate(currentTime,isToday);
             }
 
             @Override
-            public void onSelect(String selectTime) {
+            public void onScroll(String currentTime) {
+
+            }
+
+            @Override
+            public boolean onSelect(String selectTime) {
                 Toast.makeText(MainActivity.this, selectTime, Toast.LENGTH_SHORT).show();
+                return true;
             }
         });
     }
