@@ -2,57 +2,60 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
-    defaultConfig {
-        if (!isLibModule.toBoolean()) {
-            applicationId "com.landscape.dragcalendar"
-        }
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        minSdkVersion 11
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
+  defaultConfig {
+    if (!isLibModule.toBoolean()) {
+      applicationId "com.landscape.dragcalendar"
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+    versionCode rootProject.ext.versionMajor * 100 +
+        rootProject.ext.versionMinor *
+        10 +
+        rootProject.ext.versionBuild
+    versionName "${rootProject.ext.versionMajor}.${rootProject.ext.versionMinor}.${rootProject.ext.versionBuild}"
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
-    compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+  }
+  compileOptions {
+    targetCompatibility 1.8
+    sourceCompatibility 1.8
+  }
+  sourceSets {
+    main {
+      jni.srcDirs = ['src/main/jni', 'src/main/jniLibs/']
+      if (isLibModule.toBoolean()) {
+        manifest.srcFile 'src/main/AndroidManifest.xml'
+      } else {
+        manifest.srcFile 'src/appModule/AndroidManifest.xml'
+        res.srcDirs += ['src/main/appModuleRes']
+      }
     }
-    sourceSets {
-        main {
-            jni.srcDirs = ['src/main/jni', 'src/main/jniLibs/']
-            if (isLibModule.toBoolean()) {
-                manifest.srcFile 'src/main/AndroidManifest.xml'
-            } else {
-                manifest.srcFile 'src/appModule/AndroidManifest.xml'
-                res.srcDirs += ['src/main/appModuleRes']
-            }
-        }
-    }
-    configurations.all {
-        resolutionStrategy.force 'com.android.support:support-annotations:23.1.1'
-    }
+  }
+  configurations.all {
+    resolutionStrategy.force rootProject.ext.annotations
+  }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:design:23.3.0'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:recyclerview-v7:23.4.0'
-    testCompile 'junit:junit:4.12'
-    androidTestCompile 'junit:junit:4.12'
-    compile 'com.android.support:support-v4:23.4.0'
-    androidTestCompile 'org.mockito:mockito-core:2.+'
-    testCompile 'org.mockito:mockito-core:2.+'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
+  compile fileTree(include: ['*.jar'], dir: 'libs')
+  androidTestCompile(rootProject.ext.espresso, {
+    exclude group: 'com.android.support', module: 'support-annotations'
+  })
+  compile rootProject.ext.supportDesign
+  compile rootProject.ext.supportV4
+  compile rootProject.ext.appcompatV7
+  compile rootProject.ext.recyclerview
+  testCompile rootProject.ext.junit
+  androidTestCompile rootProject.ext.junit
+  androidTestCompile rootProject.ext.mockitoCore
+  testCompile rootProject.ext.mockitoCore
+  androidTestCompile rootProject.ext.testRunner
+  androidTestCompile rootProject.ext.testRules
 }

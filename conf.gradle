@@ -1,0 +1,89 @@
+ext {
+
+  VRxlifecycle = '1.0'
+
+  /**
+   * project version conf
+   * */
+  versionMajor = 0
+  versionMinor = 0
+  versionBuild = 1
+
+
+  compileSdkVersion = 24
+  buildToolsVersion = "23.0.3"
+  minSdkVersion = 14
+  targetSdkVersion = 23
+
+  VSupportSdk = '23.3.0'
+  retrofitVer = '2.0.2'
+  daggerVer = '2.6'
+  okHttpVer = '3.4.1'
+
+  /**
+   * general test config
+   * */
+  espresso = 'com.android.support.test.espresso:espresso-core:2.2.2'
+  junit = 'junit:junit:4.12'
+  mockitoCore = 'org.mockito:mockito-core:2.+'
+  testRunner = 'com.android.support.test:runner:0.5'
+  testRules = 'com.android.support.test:rules:0.5'
+
+  /**
+   * general app support
+   * */
+  appcompatV7 = "com.android.support:appcompat-v7:${VSupportSdk}"
+  supportV4 = "com.android.support:support-v4:${VSupportSdk}"
+  supportDesign = "com.android.support:design:${VSupportSdk}"
+  recyclerview = "com.android.support:recyclerview-v7:${VSupportSdk}"
+  annotations = "com.android.support:support-annotations:${VSupportSdk}"
+
+  /**
+   * json convert
+   * */
+  gson = 'com.google.code.gson:gson:2.6.2'
+
+  /**
+   * logger
+   * */
+  logger = 'com.jakewharton.timber:timber:4.4.0'
+
+  /**
+   * square
+   * */
+  phrase = 'com.squareup.phrase:phrase:1.1.0'
+
+  /**
+   * ui
+   * */
+  butterknife = 'com.jakewharton:butterknife:8.1.0'
+  butterknifeCompiler = 'com.jakewharton:butterknife-compiler:8.1.0'
+
+  /**
+   * dagger
+   * */
+  dagger = "com.google.dagger:dagger:${daggerVer}"
+  daggerCompiler = "com.google.dagger:dagger-compiler:${daggerVer}"
+  javaxInject = 'javax.inject:javax.inject:1'
+
+  /**
+   * rx
+   * */
+  rxJava = 'io.reactivex:rxjava:1.1.5'
+  rxAndroid = 'io.reactivex:rxandroid:1.2.0'
+  rxPreferences = 'com.f2prateek.rx.preferences:rx-preferences:1.0.1'
+  rxLifecycle = "com.trello:rxlifecycle:${VRxlifecycle}"
+  rxlifecycleAndroid = "com.trello:rxlifecycle-android:${VRxlifecycle}"
+  rxlifecycleComponents = "com.trello:rxlifecycle-components:${VRxlifecycle}"
+
+  /**
+   * http
+   * */
+  okHttp = "com.squareup.okhttp3:okhttp:${okHttpVer}"
+  okHttpLoggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${okHttpVer}"
+
+  retrofit = "com.squareup.retrofit2:retrofit:${retrofitVer}"
+  retrofitAdapterRxJava = "com.squareup.retrofit2:adapter-rxjava:${retrofitVer}"
+  retrofitConverterMoshi = "com.squareup.retrofit2:converter-moshi:${retrofitVer}"
+  retrofitMock = "com.squareup.retrofit2:retrofit-mock:${retrofitVer}"
+}
