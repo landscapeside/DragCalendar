@@ -6,6 +6,22 @@ DragCanlendar---仿小米日历
 
 ####Usage
 
+* include
+
+      // project gradle
+      allprojects {
+          repositories {s
+            ...
+            maven { url 'https://jitpack.io' }
+          }
+        }
+      
+      
+      // your app gradle
+      dependencies {
+                compile 'com.github.landscapeside:DragCalendar:0.0.1'
+      }
+
 * 布局导入
 
 		<?xml version="1.0" encoding="utf-8"?>
