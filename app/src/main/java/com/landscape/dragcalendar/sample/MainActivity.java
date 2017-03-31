@@ -1,4 +1,4 @@
-package com.landscape.dragcalendar.simple;
+package com.landscape.dragcalendar.sample;
 
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;

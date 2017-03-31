@@ -5,7 +5,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.landscape.dragcalendar.simple.MainActivity">
+    tools:context="com.landscape.dragcalendar.sample.MainActivity">
 
     <!-- 日历的隐藏信息栏，被toolbar遮挡，通过移动toolbar显现 -->
 

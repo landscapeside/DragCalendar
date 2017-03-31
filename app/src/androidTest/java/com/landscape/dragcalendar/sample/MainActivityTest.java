@@ -1,17 +1,10 @@
-package com.landscape.dragcalendar.simple;
+package com.landscape.dragcalendar.sample;
 
 import android.os.SystemClock;
-import android.support.test.espresso.Espresso;
-import android.support.test.espresso.action.GeneralSwipeAction;
-import android.support.test.espresso.action.MotionEvents;
-import android.support.test.espresso.action.ViewActions;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.text.TextUtils;
 
-import com.landscape.dragcalendar.DragTestUtils;
 import com.landscape.dragcalendar.R;
 import com.landscape.dragcalendar.constant.Range;
 import com.landscape.dragcalendar.utils.MotionEventUtil;
@@ -23,11 +16,9 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.*;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.doubleClick;
 import static android.support.test.espresso.action.ViewActions.swipeDown;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
 import static com.landscape.dragcalendar.DragTestUtils.*;
-import static org.junit.Assert.*;
 
 /**
  * Created by landscape on 2016/12/15.
