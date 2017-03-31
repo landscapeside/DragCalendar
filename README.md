@@ -10,7 +10,7 @@ DragCanlendar---仿小米日历
 
       // project gradle
       allprojects {
-          repositories {s
+          repositories {
             ...
             maven { url 'https://jitpack.io' }
           }
